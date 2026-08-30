@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NASI BUKUH — Preorder</title>
-  <!-- Google Fonts: Plus Jakarta Sans for ultra-modern typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -102,7 +101,7 @@
     </section>
 
     <!-- VIEW 1: MENU SECTION -->
-    <div id="view-menu" class="space-y-4">
+    <div id="view-menu" class="space-y-6">
       <div id="menu-section" class="flex items-center justify-between pt-1 pb-1">
         <div>
           <h2 class="text-lg font-black tracking-tight text-gray-900">
@@ -115,8 +114,24 @@
         </span>
       </div>
 
-      <!-- Menu Container (Dinamik) -->
+      <!-- Menu Container Dinamik -->
       <div id="menu-container" class="space-y-3.5"></div>
+
+      <!-- Addon Container Dinamik -->
+      <div id="addon-section" class="pt-2">
+        <div class="flex items-center justify-between pb-3">
+          <div>
+            <h2 class="text-lg font-black tracking-tight text-gray-900">
+              PILIHAN ADD-ON
+            </h2>
+            <p class="text-xs text-gray-500 font-medium">Tambah lauk atau hidangan sampingan</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
+            Extra
+          </span>
+        </div>
+        <div id="addon-container" class="space-y-3"></div>
+      </div>
     </div>
 
     <!-- VIEW 2: CHECKOUT SECTION -->
@@ -213,7 +228,7 @@
 
         <div class="space-y-2 text-sm text-gray-600 pt-1">
           <div class="flex justify-between items-center">
-            <span class="font-medium">Subtotal Makanan</span>
+            <span class="font-medium">Subtotal Makanan & Addon</span>
             <span id="summary-subtotal" class="font-bold text-gray-900">RM 0.00</span>
           </div>
 
@@ -260,103 +275,96 @@
   </div>
 
 <script>
-const WORKER_URL =
-"https://nasi-bukuh-order.sales-tularisbro.workers.dev/";
-
-const NO_WHATSAPP_PENJUAL =
-"601156859808";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxSVjGa9eGcFH6AKJAIXkItcG3_X0qV-ACgVKmDiystAv7LTbkrbl3qVbKBxWzpuaIL/exec";  
+const WORKER_URL = "https://nasi-bukuh-order.sales-tularisbro.workers.dev/";
+const NO_WHATSAPP_PENJUAL = "601156859808";
+const API_URL = "https://script.google.com/macros/s/AKfycbxSVjGa9eGcFH6AKJAIXkItcG3_X0qV-ACgVKmDiystAv7LTbkrbl3qVbKBxWzpuaIL/exec";
 
 const MENU = [
-  {
-    id: "ayam",
-    nama: "Ayam Goreng Cincang",
-    harga: 8
-  },
-  {
-    id: "gulai_ayam",
-    nama: "Gulai Ayam",
-    harga: 8
-  },
-  {
-    id: "tongkol",
-    nama: "Gulai Ikan Tongkol",
-    harga: 8
-  }
+  { id: "ayam", nama: "Ayam Goreng Cincang", harga: 8 },
+  { id: "gulai_ayam", nama: "Gulai Ayam", harga: 8 },
+  { id: "tongkol", nama: "Gulai Ikan Tongkol", harga: 8 }
+];
+
+const ADDONS = [
+  { id: "extra_nasi", nama: "Extra Nasi", harga: 2 },
+  { id: "extra_sambal", nama: "Extra Sambal Belacan", harga: 1 },
+  { id: "telur_masin", nama: "Telur Masin (1/2 Biji)", harga: 1.5 }
 ];
 
 let cart = {};
+let cartAddons = {};
 let currentView = "menu";
 
 window.addEventListener("DOMContentLoaded", function() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  document.getElementById("input-tarikh").value =
-    tomorrow.toISOString().split("T")[0];
+  document.getElementById("input-tarikh").value = tomorrow.toISOString().split("T")[0];
 
   renderMenu();
+  renderAddons();
   renderSummary();
 });
 
 function renderMenu() {
-  const container =
-    document.getElementById("menu-container");
-
+  const container = document.getElementById("menu-container");
   container.innerHTML = MENU.map(item => {
     const qty = cart[item.id] || 0;
     return `
-    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-card hover:shadow-md transition-all flex items-center justify-between gap-3">
+    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-card flex items-center justify-between gap-3">
       <div class="flex-1">
-        <h3 class="font-bold text-gray-900 text-base leading-snug">
-          ${item.nama}
-        </h3>
-        <p class="text-brand-700 font-black text-base mt-1">
-          RM ${item.harga.toFixed(2)}
-        </p>
+        <h3 class="font-bold text-gray-900 text-base leading-snug">${item.nama}</h3>
+        <p class="text-brand-700 font-black text-base mt-1">RM ${item.harga.toFixed(2)}</p>
       </div>
-
       <div class="flex items-center space-x-1.5 bg-gray-50/80 p-1.5 rounded-xl border border-gray-200/60">
-        <button
-          onclick="updateCart('${item.id}', -1)"
-          class="w-8 h-8 bg-white hover:bg-gray-100 active:scale-95 text-gray-800 font-extrabold rounded-lg shadow-sm border border-gray-200 flex items-center justify-center transition-all">
-          −
-        </button>
+        <button onclick="updateCart('${item.id}', -1)" class="w-8 h-8 bg-white hover:bg-gray-100 active:scale-95 text-gray-800 font-extrabold rounded-lg shadow-sm border border-gray-200 flex items-center justify-center transition-all">−</button>
+        <span id="qty-${item.id}" class="text-sm font-extrabold w-6 text-center text-gray-900">${qty}</span>
+        <button onclick="updateCart('${item.id}', 1)" class="w-8 h-8 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-extrabold rounded-lg shadow-sm flex items-center justify-center transition-all">+</button>
+      </div>
+    </div>
+  `}).join("");
+}
 
-        <span
-          id="qty-${item.id}"
-          class="text-sm font-extrabold w-6 text-center text-gray-900">
-          ${qty}
-        </span>
+function renderAddons() {
+  const container = document.getElementById("addon-container");
+  if (!container) return;
 
-        <button
-          onclick="updateCart('${item.id}', 1)"
-          class="w-8 h-8 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-extrabold rounded-lg shadow-sm flex items-center justify-center transition-all">
-          +
-        </button>
+  container.innerHTML = ADDONS.map(addon => {
+    const qty = cartAddons[addon.id] || 0;
+    return `
+    <div class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-card flex items-center justify-between gap-3">
+      <div class="flex-1">
+        <h4 class="font-bold text-gray-800 text-sm leading-snug">${addon.nama}</h4>
+        <p class="text-emerald-700 font-extrabold text-xs mt-0.5">+ RM ${addon.harga.toFixed(2)}</p>
+      </div>
+      <div class="flex items-center space-x-1.5 bg-emerald-50/60 p-1.5 rounded-xl border border-emerald-100">
+        <button onclick="updateAddon('${addon.id}', -1)" class="w-7 h-7 bg-white hover:bg-emerald-100 active:scale-95 text-gray-800 font-extrabold rounded-lg shadow-sm border border-gray-200 flex items-center justify-center transition-all text-xs">−</button>
+        <span id="addon-qty-${addon.id}" class="text-xs font-extrabold w-5 text-center text-emerald-900">${qty}</span>
+        <button onclick="updateAddon('${addon.id}', 1)" class="w-7 h-7 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold rounded-lg shadow-sm flex items-center justify-center transition-all text-xs">+</button>
       </div>
     </div>
   `}).join("");
 }
 
 function updateCart(id, change) {
-  const current =
-    cart[id] || 0;
-
-  const newQty =
-    Math.max(0, current + change);
-
-  if (newQty === 0) {
-    delete cart[id];
-  } else {
-    cart[id] = newQty;
-  }
+  const current = cart[id] || 0;
+  const newQty = Math.max(0, current + change);
+  if (newQty === 0) delete cart[id];
+  else cart[id] = newQty;
 
   const qtyEl = document.getElementById("qty-" + id);
-  if (qtyEl) {
-    qtyEl.innerText = newQty;
-  }
+  if (qtyEl) qtyEl.innerText = newQty;
+
+  renderSummary();
+}
+
+function updateAddon(id, change) {
+  const current = cartAddons[id] || 0;
+  const newQty = Math.max(0, current + change);
+  if (newQty === 0) delete cartAddons[id];
+  else cartAddons[id] = newQty;
+
+  const qtyEl = document.getElementById("addon-qty-" + id);
+  if (qtyEl) qtyEl.innerText = newQty;
 
   renderSummary();
 }
@@ -366,129 +374,96 @@ function getTotals() {
   let subtotal = 0;
 
   Object.entries(cart).forEach(([id, qty]) => {
-    const item =
-      MENU.find(m => m.id === id);
-
+    const item = MENU.find(m => m.id === id);
     if (item) {
       count += qty;
-      subtotal +=
-        item.harga * qty;
+      subtotal += item.harga * qty;
     }
   });
 
-  const select =
-    document.getElementById("select-kawasan");
+  Object.entries(cartAddons).forEach(([id, qty]) => {
+    const addon = ADDONS.find(a => a.id === id);
+    if (addon) {
+      count += qty;
+      subtotal += addon.harga * qty;
+    }
+  });
 
-  const selected =
-    select.options[select.selectedIndex];
+  const select = document.getElementById("select-kawasan");
+  const selected = select.options[select.selectedIndex];
+  const deliveryFee = selected && selected.dataset.caj ? Number(selected.dataset.caj) : 0;
 
-  const deliveryFee =
-    selected && selected.dataset.caj
-      ? Number(selected.dataset.caj)
-      : 0;
-
-  return {
-    count,
-    subtotal,
-    deliveryFee,
-    total:
-      subtotal + deliveryFee
-  };
+  return { count, subtotal, deliveryFee, total: subtotal + deliveryFee };
 }
 
 function renderSummary() {
-  const totals =
-    getTotals();
+  const totals = getTotals();
 
-  document.getElementById(
-    "cart-btn-info"
-  ).innerText =
+  document.getElementById("cart-btn-info").innerText =
     currentView === "menu"
       ? `${totals.count} ITEM • RM ${totals.subtotal.toFixed(2)}`
       : `JUMLAH: RM ${totals.total.toFixed(2)}`;
 
-  document.getElementById(
-    "cart-btn-label"
-  ).innerHTML =
-    currentView === "menu"
-      ? `CHECKOUT →`
-      : `ORDER VIA WHATSAPP`;
+  document.getElementById("cart-btn-label").innerHTML =
+    currentView === "menu" ? `CHECKOUT →` : `ORDER VIA WHATSAPP`;
 
-  document.getElementById(
-    "summary-subtotal"
-  ).innerText =
-    `RM ${totals.subtotal.toFixed(2)}`;
+  document.getElementById("summary-subtotal").innerText = `RM ${totals.subtotal.toFixed(2)}`;
+  document.getElementById("summary-delivery").innerText = `RM ${totals.deliveryFee.toFixed(2)}`;
+  document.getElementById("summary-total").innerText = `RM ${totals.total.toFixed(2)}`;
 
-  document.getElementById(
-    "summary-delivery"
-  ).innerText =
-    `RM ${totals.deliveryFee.toFixed(2)}`;
+  const list = document.getElementById("checkout-items-list");
+  const hasItems = Object.keys(cart).length > 0 || Object.keys(cartAddons).length > 0;
 
-  document.getElementById(
-    "summary-total"
-  ).innerText =
-    `RM ${totals.total.toFixed(2)}`;
-
-  const list =
-    document.getElementById(
-      "checkout-items-list"
-    );
-
-  if (Object.keys(cart).length === 0) {
+  if (!hasItems) {
     list.innerHTML = `<p class="text-gray-400 text-xs italic py-1">Tiada item dipilih</p>`;
   } else {
-    list.innerHTML =
-      Object.entries(cart).map(([id, qty]) => {
-        const item =
-          MENU.find(m => m.id === id);
-
-        return `
+    let html = "";
+    Object.entries(cart).forEach(([id, qty]) => {
+      const item = MENU.find(m => m.id === id);
+      if (item) {
+        html += `
           <div class="flex justify-between items-center py-1">
             <span class="font-medium text-gray-800">
               <span class="font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded mr-1.5 text-xs">${qty}x</span> ${item.nama}
             </span>
-            <span class="font-semibold text-gray-900">
-              RM ${(item.harga * qty).toFixed(2)}
-            </span>
+            <span class="font-semibold text-gray-900">RM ${(item.harga * qty).toFixed(2)}</span>
           </div>
         `;
-      }).join("");
+      }
+    });
+
+    Object.entries(cartAddons).forEach(([id, qty]) => {
+      const addon = ADDONS.find(a => a.id === id);
+      if (addon) {
+        html += `
+          <div class="flex justify-between items-center py-1 text-xs">
+            <span class="font-medium text-emerald-800">
+              <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mr-1.5">${qty}x</span> [Addon] ${addon.nama}
+            </span>
+            <span class="font-semibold text-gray-800">RM ${(addon.harga * qty).toFixed(2)}</span>
+          </div>
+        `;
+      }
+    });
+
+    list.innerHTML = html;
   }
 }
 
 function switchView(view) {
-  currentView =
-    view;
-
-  document.getElementById(
-    "view-menu"
-  ).classList.toggle(
-    "hidden",
-    view !== "menu"
-  );
-
-  document.getElementById(
-    "view-checkout"
-  ).classList.toggle(
-    "hidden",
-    view !== "checkout"
-  );
-
+  currentView = view;
+  document.getElementById("view-menu").classList.toggle("hidden", view !== "menu");
+  document.getElementById("view-checkout").classList.toggle("hidden", view !== "checkout");
   renderSummary();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function handleCartAction() {
-  const totals =
-    getTotals();
-
+  const totals = getTotals();
   if (totals.count === 0) {
-    alert(
-      "Sila pilih sekurang-kurangnya satu menu."
-    );
+    alert("Sila pilih sekurang-kurangnya satu menu.");
     return;
   }
-
   if (currentView === "menu") {
     switchView("checkout");
   } else {
@@ -497,76 +472,33 @@ function handleCartAction() {
 }
 
 async function processOrder() {
-  const nama =
-    document.getElementById(
-      "input-nama"
-    ).value.trim();
+  const nama = document.getElementById("input-nama").value.trim();
+  const whatsapp = document.getElementById("input-wa").value.trim();
+  const tarikh = document.getElementById("input-tarikh").value;
+  const kawasanSelect = document.getElementById("select-kawasan");
+  const kawasan = kawasanSelect.value;
+  const lokasi = document.getElementById("input-lokasi").value.trim();
 
-  const whatsapp =
-    document.getElementById(
-      "input-wa"
-    ).value.trim();
-
-  const tarikh =
-    document.getElementById(
-      "input-tarikh"
-    ).value;
-
-  const kawasanSelect =
-    document.getElementById(
-      "select-kawasan"
-    );
-
-  const kawasan =
-    kawasanSelect.value;
-
-  const lokasi =
-    document.getElementById(
-      "input-lokasi"
-    ).value.trim();
-
-  if (
-    !nama ||
-    !whatsapp ||
-    !tarikh ||
-    !kawasan ||
-    !lokasi
-  ) {
-    alert(
-      "Sila lengkapkan semua maklumat penghantaran."
-    );
+  if (!nama || !whatsapp || !tarikh || !kawasan || !lokasi) {
+    alert("Sila lengkapkan semua maklumat penghantaran.");
     return;
   }
 
-  const totals =
-    getTotals();
-
-  const orderId =
-    "NB-" +
-    Math.floor(
-      100000 +
-      Math.random() * 900000
-    );
+  const totals = getTotals();
+  const orderId = "NB-" + Math.floor(100000 + Math.random() * 900000);
 
   const pesananArray = [];
+  Object.entries(cart).forEach(([id, qty]) => {
+    const item = MENU.find(m => m.id === id);
+    if (item) pesananArray.push(`${qty}x ${item.nama}`);
+  });
 
-  Object.entries(cart).forEach(
-    ([id, qty]) => {
-      const item =
-        MENU.find(
-          m => m.id === id
-        );
+  Object.entries(cartAddons).forEach(([id, qty]) => {
+    const addon = ADDONS.find(a => a.id === id);
+    if (addon) pesananArray.push(`${qty}x ${addon.nama} (Addon)`);
+  });
 
-      if (item) {
-        pesananArray.push(
-          `${qty}x ${item.nama}`
-        );
-      }
-    }
-  );
-
-  const pesanan =
-    pesananArray.join(", ");
+  const pesanan = pesananArray.join(", ");
 
   const orderData = {
     orderId,
@@ -576,84 +508,39 @@ async function processOrder() {
     lokasi,
     tarikh,
     pesanan,
-    jumlah:
-      `RM ${totals.total.toFixed(2)}`
+    jumlah: `RM ${totals.total.toFixed(2)}`
   };
 
   try {
-    await fetch(
-      WORKER_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json"
-        },
-        body:
-          JSON.stringify(orderData)
-      }
-    );
+    await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData)
+    });
   } catch (error) {
-    console.log(
-      "Simpanan order:",
-      error
-    );
+    console.log("Simpanan order:", error);
   }
 
-  let msg =
-    `*ORDER NASI BUKUH*\n`;
+  let msg = `*ORDER NASI BUKUH*\n`;
+  msg += `---------------------------\n`;
+  msg += `*Order ID:* ${orderId}\n`;
+  msg += `*Nama:* ${nama}\n`;
+  msg += `*No. WhatsApp:* ${whatsapp}\n`;
+  msg += `*Tarikh Order:* ${tarikh}\n`;
+  msg += `*Kawasan:* ${kawasan}\n`;
+  msg += `*Lokasi:* ${lokasi}\n\n`;
+  msg += `*PESANAN:*\n`;
+  pesananArray.forEach(item => {
+    msg += `- ${item}\n`;
+  });
+  msg += `\n*Subtotal:* RM ${totals.subtotal.toFixed(2)}\n`;
+  msg += `*Caj Delivery:* RM ${totals.deliveryFee.toFixed(2)}\n`;
+  msg += `*JUMLAH:* RM ${totals.total.toFixed(2)}\n`;
+  msg += `---------------------------\n`;
+  msg += `_Bayaran akan diuruskan secara manual melalui WhatsApp._`;
 
-  msg +=
-    `---------------------------\n`;
-
-  msg +=
-    `*Order ID:* ${orderId}\n`;
-
-  msg +=
-    `*Nama:* ${nama}\n`;
-
-  msg +=
-    `*No. WhatsApp:* ${whatsapp}\n`;
-
-  msg +=
-    `*Tarikh Order:* ${tarikh}\n`;
-
-  msg +=
-    `*Kawasan:* ${kawasan}\n`;
-
-  msg +=
-    `*Lokasi:* ${lokasi}\n\n`;
-
-  msg +=
-    `*PESANAN:*\n`;
-
-  pesananArray.forEach(
-    item => {
-      msg +=
-        `- ${item}\n`;
-    }
-  );
-
-  msg +=
-    `\n*Subtotal:* RM ${totals.subtotal.toFixed(2)}\n`;
-
-  msg +=
-    `*Caj Delivery:* RM ${totals.deliveryFee.toFixed(2)}\n`;
-
-  msg +=
-    `*JUMLAH:* RM ${totals.total.toFixed(2)}\n`;
-
-  msg +=
-    `---------------------------\n`;
-
-  msg +=
-    `_Bayaran akan diuruskan secara manual melalui WhatsApp._`;
-
-  const waUrl =
-    `https://wa.me/${NO_WHATSAPP_PENJUAL}?text=${encodeURIComponent(msg)}`;
-
-  window.location.href =
-    waUrl;
+  const waUrl = `https://wa.me/${NO_WHATSAPP_PENJUAL}?text=${encodeURIComponent(msg)}`;
+  window.location.href = waUrl;
 }
 </script>
 </body>
