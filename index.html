@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NASI BUKUH — Preorder</title>
-
+  <!-- Google Fonts: Plus Jakarta Sans for ultra-modern typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script>
     tailwind.config = {
       theme: {
@@ -26,1009 +25,387 @@
               700: '#15803d',
               800: '#166534',
               900: '#14532d',
-              DEFAULT: '#16a34a'
+              DEFAULT: '#16a34a',
+              dark: '#15803d',
+              light: '#f0fdf4'
             }
           },
           boxShadow: {
-            card: '0 4px 20px 0 rgba(0, 0, 0, 0.04)',
-            sticky: '0 -8px 25px rgba(0, 0, 0, 0.08)'
+            'card': '0 4px 20px 0 rgba(0, 0, 0, 0.04)',
+            'sticky': '0 -8px 25px rgba(0, 0, 0, 0.08)'
           }
         }
       }
     }
   </script>
-
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-
     .glass-nav {
-      background: rgba(255,255,255,.92);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-
-    .addon-check:checked + div {
-      border-color: #16a34a;
-      background: #f0fdf4;
-    }
-
-    .addon-check:checked + div .addon-tick {
-      opacity: 1;
-      transform: scale(1);
-    }
   </style>
 </head>
-
 <body class="bg-gradient-to-b from-emerald-50/40 via-gray-50 to-white text-gray-800 antialiased min-h-screen pb-32">
 
   <!-- HEADER -->
-  <header class="sticky top-0 z-30 glass-nav border-b border-emerald-100/60">
+  <header class="sticky top-0 z-30 glass-nav border-b border-emerald-100/60 transition-all duration-200">
     <div class="max-w-md mx-auto px-5 py-3.5 flex items-center justify-between">
-
       <div class="flex items-center space-x-3">
-        <div class="w-11 h-11 bg-gradient-to-br from-brand-600 to-brand-800 text-white font-extrabold text-lg flex items-center justify-center rounded-2xl shadow-sm">
+        <div class="w-11 h-11 bg-gradient-to-br from-brand-600 to-brand-800 text-white font-extrabold text-lg flex items-center justify-center rounded-2xl shadow-sm shadow-brand-600/30 tracking-wider">
           NB
         </div>
-
         <div>
           <h1 class="text-xl font-extrabold tracking-tight text-gray-900 leading-none">
             NASI BUKUH
           </h1>
-
-          <p class="text-[11px] font-semibold text-brand-700 mt-1">
+          <p class="text-[11px] font-semibold text-brand-700 mt-1 tracking-tight">
             "Make sebukuh, esok nok lagi 😋"
           </p>
         </div>
       </div>
-
       <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200/50">
-        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mr-1.5"></span>
-        PREORDER
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mr-1.5 animate-pulse"></span> PREORDER
       </span>
-
     </div>
   </header>
 
-
   <main class="max-w-md mx-auto px-4 pt-4">
 
-    <!-- HERO -->
-    <section class="mb-6 rounded-3xl bg-gradient-to-br from-brand-900 via-brand-800 to-emerald-950 text-white p-6 shadow-xl relative overflow-hidden">
-
-      <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-brand-500/20 rounded-full blur-2xl"></div>
+    <!-- HERO SECTION -->
+    <section class="mb-6 rounded-3xl bg-gradient-to-br from-brand-900 via-brand-800 to-emerald-950 text-white p-6 shadow-xl relative overflow-hidden border border-emerald-700/30">
+      <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-brand-500/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-xl pointer-events-none"></div>
 
       <div class="relative z-10">
-
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold mb-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold backdrop-blur-md mb-3 border border-white/10">
           🔥 Speciality Kelantan
         </div>
-
-        <h2 class="text-2xl font-black tracking-tight leading-tight">
+        <h2 class="text-2xl font-black tracking-tight leading-tight text-white mb-1">
           NASI BUKUH
         </h2>
-
-        <p class="text-emerald-300 font-bold text-base mt-1">
+        <p class="text-emerald-300 font-bold text-base mb-2">
           Ayam Goreng Cincang Ori Kelate
         </p>
-
-        <p class="text-emerald-100/80 text-xs leading-relaxed mt-2 mb-5">
-          Nasi berlauk style Kelate, panas & puas hati.
+        <p class="text-emerald-100/80 text-xs leading-relaxed mb-5 font-normal">
+          Nasi berlauk style Kelate, panas & puas hati. Disediakan khas untuk sajian harian anda!
         </p>
 
-        <a
-          href="#menu-section"
-          class="inline-flex items-center justify-center w-full py-3 px-5 rounded-2xl bg-white text-brand-900 font-extrabold text-sm shadow-lg active:scale-[0.98]"
-        >
+        <a href="#menu-section" class="inline-flex items-center justify-center w-full py-3 px-5 rounded-2xl bg-white text-brand-900 font-extrabold text-sm shadow-lg hover:bg-emerald-50 active:scale-[0.98] transition-all">
           ORDER SEKARANG ↓
         </a>
-
       </div>
     </section>
 
-
-    <!-- MENU -->
+    <!-- VIEW 1: MENU SECTION -->
     <div id="view-menu" class="space-y-4">
-
       <div id="menu-section" class="flex items-center justify-between pt-1 pb-1">
-
         <div>
           <h2 class="text-lg font-black tracking-tight text-gray-900">
             PILIH MENU
           </h2>
-
-          <p class="text-xs text-gray-500 font-medium">
-            Pilih menu utama anda
-          </p>
+          <p class="text-xs text-gray-500 font-medium">Tambah menu pilihan anda ke troli</p>
         </div>
-
         <span class="text-xs font-bold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-lg border border-brand-100">
           Fresh Made
         </span>
-
       </div>
 
-
-      <!-- LOADING -->
-      <div id="loading-menu" class="bg-white rounded-2xl border border-gray-100 p-5 text-center text-sm text-gray-500">
-        Memuatkan menu...
-      </div>
-
-
-      <!-- ERROR -->
-      <div id="menu-error" class="hidden bg-red-50 border border-red-100 text-red-700 rounded-2xl p-4 text-sm">
-      </div>
-
-
-      <!-- MENU CONTAINER -->
+      <!-- Menu Container (Dinamik) -->
       <div id="menu-container" class="space-y-3.5"></div>
-
-
-      <!-- ADDON -->
-      <div id="addon-section" class="hidden">
-
-        <div class="mt-6 mb-3">
-
-          <h2 class="text-lg font-black tracking-tight text-gray-900">
-            TAMBAHAN
-          </h2>
-
-          <p class="text-xs text-gray-500">
-            Pilihan tambahan untuk pesanan anda
-          </p>
-
-        </div>
-
-        <div id="addon-container" class="space-y-2.5"></div>
-
-      </div>
-
     </div>
 
-
-    <!-- CHECKOUT -->
+    <!-- VIEW 2: CHECKOUT SECTION -->
     <div id="view-checkout" class="hidden space-y-5">
-
-      <button
-        onclick="switchView('menu')"
-        class="inline-flex items-center space-x-2 text-brand-700 font-bold text-sm bg-brand-50 px-4 py-2 rounded-xl border border-brand-200/60"
-      >
-        ←
+      
+      <button onclick="switchView('menu')" class="inline-flex items-center space-x-2 text-brand-700 hover:text-brand-800 font-bold text-sm bg-brand-50 hover:bg-brand-100/80 px-4 py-2 rounded-xl transition-all border border-brand-200/60 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         <span>Tukar / Tambah Menu</span>
       </button>
 
-
-      <!-- DELIVERY FORM -->
+      <!-- Form Maklumat Delivery -->
       <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-card space-y-4">
-
         <div class="flex items-center space-x-2 border-b border-gray-100 pb-3">
-
-          <div class="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600">
+          <div class="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 font-bold">
             📍
           </div>
-
           <div>
             <h2 class="text-base font-extrabold text-gray-900">
               MAKLUMAT DELIVERY
             </h2>
-
-            <p class="text-xs text-gray-400">
-              Sila isi lokasi penghantaran
-            </p>
+            <p class="text-xs text-gray-400">Sila isi lokasi penghantaran anda</p>
           </div>
-
         </div>
-
 
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
             Nama Penerima
           </label>
-
-          <input
-            id="input-nama"
-            type="text"
+          <input id="input-nama" type="text"
             placeholder="Contoh: Ali Rahman"
-            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm outline-none font-medium"
-          >
+            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm transition-all outline-none font-medium text-gray-900">
         </div>
-
 
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
             No. WhatsApp
           </label>
-
-          <input
-            id="input-wa"
-            type="tel"
+          <input id="input-wa" type="tel"
             placeholder="Contoh: 0123456789"
-            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm outline-none font-medium"
-          >
+            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm transition-all outline-none font-medium text-gray-900">
         </div>
-
 
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
             Tarikh Penghantaran
           </label>
-
-          <input
-            id="input-tarikh"
-            type="date"
-            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm outline-none font-medium"
-          >
+          <input id="input-tarikh" type="date"
+            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm transition-all outline-none font-medium text-gray-900">
         </div>
-
 
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
             Kawasan Penghantaran
           </label>
-
-          <select
-            id="select-kawasan"
-            onchange="renderSummary()"
-            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm outline-none font-medium"
-          >
-            <option value="">-- Pilih Kawasan --</option>
-          </select>
+          <div class="relative">
+            <select id="select-kawasan" onchange="renderSummary()"
+              class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm transition-all outline-none font-medium text-gray-900 appearance-none">
+              <option value="">-- Pilih Kawasan --</option>
+              <option value="Kuala Selangor" data-caj="3">Kuala Selangor — RM3.00</option>
+              <option value="Ijok" data-caj="5">Ijok — RM5.00</option>
+              <option value="Bestari Jaya" data-caj="7">Bestari Jaya — RM7.00</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
         </div>
-
 
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
             Lokasi / Alamat Penghantaran
           </label>
-
-          <textarea
-            id="input-lokasi"
-            rows="3"
+          <textarea id="input-lokasi" rows="3"
             placeholder="Alamat lengkap rumah / pejabat..."
-            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm outline-none font-medium resize-none"
-          ></textarea>
+            class="w-full bg-gray-50/80 border border-gray-200 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 rounded-xl p-3 text-sm transition-all outline-none font-medium text-gray-900 resize-none"></textarea>
         </div>
-
       </div>
 
-
-      <!-- SUMMARY -->
+      <!-- Ringkasan Pesanan -->
       <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-card space-y-4">
-
-        <div class="flex items-center space-x-2 border-b border-gray-100 pb-3">
-
-          <div class="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center">
-            📝
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 font-bold">
+              📝
+            </div>
+            <h2 class="text-base font-extrabold text-gray-900">
+              RINGKASAN PESANAN
+            </h2>
           </div>
-
-          <h2 class="text-base font-extrabold text-gray-900">
-            RINGKASAN PESANAN
-          </h2>
-
         </div>
 
+        <!-- Dynamic Cart Items -->
+        <div id="checkout-items-list" class="space-y-2 text-sm border-b border-gray-100 pb-3 text-gray-700"></div>
 
-        <div
-          id="checkout-items-list"
-          class="space-y-2 text-sm border-b border-gray-100 pb-3 text-gray-700"
-        ></div>
-
-
-        <div class="space-y-2 text-sm text-gray-600">
-
-          <div class="flex justify-between">
-            <span>Subtotal Makanan</span>
-            <span id="summary-subtotal" class="font-bold text-gray-900">
-              RM 0.00
-            </span>
+        <div class="space-y-2 text-sm text-gray-600 pt-1">
+          <div class="flex justify-between items-center">
+            <span class="font-medium">Subtotal Makanan</span>
+            <span id="summary-subtotal" class="font-bold text-gray-900">RM 0.00</span>
           </div>
 
-          <div class="flex justify-between">
-            <span>Caj Delivery</span>
-            <span id="summary-delivery" class="font-bold text-gray-900">
-              RM 0.00
-            </span>
+          <div class="flex justify-between items-center">
+            <span class="font-medium">Caj Delivery</span>
+            <span id="summary-delivery" class="font-bold text-gray-900">RM 0.00</span>
           </div>
-
         </div>
-
 
         <div class="pt-3 border-t border-dashed border-gray-200 flex justify-between items-center bg-brand-50/50 -mx-5 -mb-5 p-5 rounded-b-3xl">
-
           <div>
-            <span class="block text-[11px] font-bold uppercase tracking-wider text-gray-500">
-              JUMLAH BAYARAN
-            </span>
-
-            <span class="text-xs text-gray-400">
-              Bayaran manual via WhatsApp
-            </span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-gray-500">JUMLAH BAYARAN</span>
+            <span class="text-xs text-gray-400 font-normal">Bayaran manual via WhatsApp</span>
           </div>
-
-          <span
-            id="summary-total"
-            class="text-xl font-black text-brand-700"
-          >
-            RM 0.00
-          </span>
-
+          <span id="summary-total" class="text-xl font-black text-brand-700">RM 0.00</span>
         </div>
-
       </div>
 
     </div>
 
   </main>
 
-
-  <!-- STICKY CART -->
-  <div
-    id="sticky-cart"
-    class="fixed bottom-0 left-0 right-0 glass-nav border-t border-gray-200/80 p-3.5 z-40 shadow-sticky"
-  >
-
+  <!-- STICKY BOTTOM CART BAR -->
+  <div id="sticky-cart" class="fixed bottom-0 left-0 right-0 glass-nav border-t border-gray-200/80 p-3.5 z-40 shadow-sticky">
     <div class="max-w-md mx-auto">
-
-      <button
-        id="btn-cart-action"
+      <button id="btn-cart-action"
         onclick="handleCartAction()"
-        class="w-full bg-gradient-to-r from-brand-600 to-brand-700 text-white font-extrabold py-4 px-5 rounded-2xl shadow-lg flex items-center justify-between active:scale-[0.99]"
-      >
-
+        class="w-full bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-extrabold py-4 px-5 rounded-2xl shadow-lg shadow-brand-600/30 flex items-center justify-between active:scale-[0.99] transition-all">
+        
         <div class="flex items-center space-x-2">
-
-          <div class="bg-white/20 p-1.5 rounded-xl">
+          <div class="bg-white/20 p-1.5 rounded-xl backdrop-blur-sm">
             🛒
           </div>
-
-          <span
-            id="cart-btn-info"
-            class="text-sm tracking-wide"
-          >
+          <span id="cart-btn-info" class="text-sm tracking-wide">
             0 ITEM • RM 0.00
           </span>
-
         </div>
 
-        <span
-          id="cart-btn-label"
-          class="text-sm tracking-wider font-extrabold"
-        >
+        <span id="cart-btn-label" class="text-sm tracking-wider font-extrabold flex items-center gap-1">
           CHECKOUT →
         </span>
-
       </button>
-
     </div>
-
   </div>
 
-
 <script>
-
-/* =========================================================
-   URL ASAL — JANGAN UBAH
-========================================================= */
-
 const WORKER_URL =
-  "https://nasi-bukuh-order.sales-tularisbro.workers.dev/";
+"https://nasi-bukuh-order.sales-tularisbro.workers.dev/";
 
 const NO_WHATSAPP_PENJUAL =
-  "601156859808";
+"601156859808";
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbxSVjGa9eGcFH6AKJAIXkItcG3_X0qV-ACgVKmDiystAv7LTbkrbl3qVbKBxWzpuaIL/exec";
+"https://script.google.com/macros/s/AKfycbxSVjGa9eGcFH6AKJAIXkItcG3_X0qV-ACgVKmDiystAv7LTbkrbl3qVbKBxWzpuaIL/exec";  
 
-
-/* =========================================================
-   DATA
-========================================================= */
-
-let MENU = [];
-let ADDONS = [];
-let DELIVERY = [];
+const MENU = [
+  {
+    id: "ayam",
+    nama: "Ayam Goreng Cincang",
+    harga: 8
+  },
+  {
+    id: "gulai_ayam",
+    nama: "Gulai Ayam",
+    harga: 8
+  },
+  {
+    id: "tongkol",
+    nama: "Gulai Ikan Tongkol",
+    harga: 8
+  }
+];
 
 let cart = {};
-let addonCart = {};
-
 let currentView = "menu";
 
+window.addEventListener("DOMContentLoaded", function() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById("input-tarikh").value =
+    tomorrow.toISOString().split("T")[0];
 
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function money(value) {
-  return `RM ${Number(value || 0).toFixed(2)}`;
-}
-
-
-function isTrue(value) {
-  return (
-    value === true ||
-    String(value).trim().toUpperCase() === "TRUE"
-  );
-}
-
-
-function normalizeMenuItem(item) {
-
-  return {
-    id: String(item.ID ?? item.id ?? "").trim(),
-
-    nama: String(
-      item.Nama ??
-      item.nama ??
-      ""
-    ).trim(),
-
-    harga: Number(
-      item.Harga ??
-      item.harga ??
-      0
-    ),
-
-    gambar: String(
-      item.Gambar ??
-      item.gambar ??
-      ""
-    ).trim(),
-
-    aktif: isTrue(
-      item.Aktif ??
-      item.aktif
-    ),
-
-    jenis: String(
-      item.Jenis ??
-      item.jenis ??
-      "MENU"
-    ).trim().toUpperCase()
-  };
-
-}
-
-
-function normalizeDeliveryItem(item) {
-
-  return {
-    kawasan: String(
-      item.Kawasan ??
-      item.kawasan ??
-      ""
-    ).trim(),
-
-    caj: Number(
-      item.Caj ??
-      item.caj ??
-      0
-    ),
-
-    aktif: isTrue(
-      item.Aktif ??
-      item.aktif
-    )
-  };
-
-}
-
-
-/* =========================================================
-   LOAD GOOGLE SHEET
-========================================================= */
-
-async function loadGoogleSheetData() {
-
-  const loading =
-    document.getElementById("loading-menu");
-
-  const errorBox =
-    document.getElementById("menu-error");
-
-  try {
-
-    loading.classList.remove("hidden");
-    errorBox.classList.add("hidden");
-
-    const response =
-      await fetch(API_URL, {
-        method: "GET",
-        cache: "no-store"
-      });
-
-    if (!response.ok) {
-      throw new Error(
-        `API HTTP ${response.status}`
-      );
-    }
-
-    const data =
-      await response.json();
-
-    if (!data.success) {
-      throw new Error(
-        data.error || "API gagal membaca data."
-      );
-    }
-
-
-    /* =========================
-       MENU
-    ========================= */
-
-    const rawMenu =
-      Array.isArray(data.menu)
-        ? data.menu
-        : [];
-
-    const normalizedMenu =
-      rawMenu.map(normalizeMenuItem);
-
-    MENU =
-      normalizedMenu.filter(item =>
-        item.aktif &&
-        item.jenis === "MENU" &&
-        item.id &&
-        item.nama
-      );
-
-    ADDONS =
-      normalizedMenu.filter(item =>
-        item.aktif &&
-        item.jenis === "ADDON" &&
-        item.id &&
-        item.nama
-      );
-
-
-    /* =========================
-       DELIVERY
-    ========================= */
-
-    DELIVERY =
-      (Array.isArray(data.delivery)
-        ? data.delivery
-        : []
-      )
-      .map(normalizeDeliveryItem)
-      .filter(item =>
-        item.aktif &&
-        item.kawasan
-      );
-
-
-    renderMenu();
-    renderAddons();
-    renderDelivery();
-    renderSummary();
-
-  } catch (error) {
-
-    console.error(
-      "Gagal membaca Google Sheet:",
-      error
-    );
-
-    errorBox.innerText =
-      "Menu tidak dapat dimuatkan. Sila refresh website.";
-
-    errorBox.classList.remove("hidden");
-
-  } finally {
-
-    loading.classList.add("hidden");
-
-  }
-
-}
-
-
-/* =========================================================
-   RENDER MENU
-========================================================= */
+  renderMenu();
+  renderSummary();
+});
 
 function renderMenu() {
-
   const container =
     document.getElementById("menu-container");
 
-  if (!MENU.length) {
-
-    container.innerHTML = `
-      <div class="bg-white rounded-2xl border border-gray-100 p-5 text-center text-sm text-gray-500">
-        Tiada menu tersedia buat masa ini.
+  container.innerHTML = MENU.map(item => {
+    const qty = cart[item.id] || 0;
+    return `
+    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-card hover:shadow-md transition-all flex items-center justify-between gap-3">
+      <div class="flex-1">
+        <h3 class="font-bold text-gray-900 text-base leading-snug">
+          ${item.nama}
+        </h3>
+        <p class="text-brand-700 font-black text-base mt-1">
+          RM ${item.harga.toFixed(2)}
+        </p>
       </div>
-    `;
 
-    return;
-  }
+      <div class="flex items-center space-x-1.5 bg-gray-50/80 p-1.5 rounded-xl border border-gray-200/60">
+        <button
+          onclick="updateCart('${item.id}', -1)"
+          class="w-8 h-8 bg-white hover:bg-gray-100 active:scale-95 text-gray-800 font-extrabold rounded-lg shadow-sm border border-gray-200 flex items-center justify-center transition-all">
+          −
+        </button>
 
+        <span
+          id="qty-${item.id}"
+          class="text-sm font-extrabold w-6 text-center text-gray-900">
+          ${qty}
+        </span>
 
-  container.innerHTML =
-    MENU.map(item => {
-
-      const qty =
-        cart[item.id] || 0;
-
-      const image =
-        item.gambar
-          ? `
-            <img
-              src="${item.gambar}"
-              alt="${item.nama}"
-              class="w-20 h-20 object-cover rounded-2xl"
-              loading="lazy"
-            >
-          `
-          : `
-            <div class="w-20 h-20 rounded-2xl bg-brand-50 flex items-center justify-center text-3xl">
-              🍚
-            </div>
-          `;
-
-
-      return `
-
-        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-card flex items-center gap-3">
-
-          ${image}
-
-          <div class="flex-1 min-w-0">
-
-            <h3 class="font-bold text-gray-900 text-sm leading-snug">
-              ${item.nama}
-            </h3>
-
-            <p class="text-brand-700 font-black text-base mt-1">
-              ${money(item.harga)}
-            </p>
-
-          </div>
-
-
-          <div class="flex items-center space-x-1.5 bg-gray-50 p-1.5 rounded-xl border border-gray-200/60">
-
-            <button
-              onclick="updateCart('${item.id}', -1)"
-              class="w-8 h-8 bg-white text-gray-800 font-extrabold rounded-lg shadow-sm border border-gray-200 flex items-center justify-center"
-            >
-              −
-            </button>
-
-            <span
-              id="qty-${item.id}"
-              class="text-sm font-extrabold w-6 text-center text-gray-900"
-            >
-              ${qty}
-            </span>
-
-            <button
-              onclick="updateCart('${item.id}', 1)"
-              class="w-8 h-8 bg-brand-600 text-white font-extrabold rounded-lg shadow-sm flex items-center justify-center"
-            >
-              +
-            </button>
-
-          </div>
-
-        </div>
-
-      `;
-
-    }).join("");
-
+        <button
+          onclick="updateCart('${item.id}', 1)"
+          class="w-8 h-8 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-extrabold rounded-lg shadow-sm flex items-center justify-center transition-all">
+          +
+        </button>
+      </div>
+    </div>
+  `}).join("");
 }
-
-
-/* =========================================================
-   RENDER ADDONS
-========================================================= */
-
-function renderAddons() {
-
-  const section =
-    document.getElementById("addon-section");
-
-  const container =
-    document.getElementById("addon-container");
-
-
-  if (!ADDONS.length) {
-
-    section.classList.add("hidden");
-    return;
-
-  }
-
-
-  section.classList.remove("hidden");
-
-
-  container.innerHTML =
-    ADDONS.map(item => {
-
-      const checked =
-        addonCart[item.id] ? "checked" : "";
-
-
-      return `
-
-        <label class="block cursor-pointer">
-
-          <input
-            type="checkbox"
-            class="addon-check sr-only"
-            ${checked}
-            onchange="toggleAddon('${item.id}', this.checked)"
-          >
-
-          <div class="relative flex items-center justify-between gap-3 bg-white border border-gray-200 rounded-2xl p-4 transition-all">
-
-            <div class="flex items-center gap-3">
-
-              <div class="w-6 h-6 rounded-lg border-2 border-gray-300 flex items-center justify-center shrink-0">
-
-                <span class="addon-tick opacity-0 scale-75 text-brand-600 font-black transition-all">
-                  ✓
-                </span>
-
-              </div>
-
-              <div>
-
-                <div class="font-bold text-sm text-gray-900">
-                  ${item.nama}
-                </div>
-
-                <div class="text-brand-700 font-extrabold text-sm mt-0.5">
-                  + ${money(item.harga)}
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </label>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =========================================================
-   ADDON TOGGLE
-========================================================= */
-
-function toggleAddon(id, checked) {
-
-  if (checked) {
-
-    addonCart[id] = 1;
-
-  } else {
-
-    delete addonCart[id];
-
-  }
-
-  renderSummary();
-
-}
-
-
-/* =========================================================
-   DELIVERY
-========================================================= */
-
-function renderDelivery() {
-
-  const select =
-    document.getElementById(
-      "select-kawasan"
-    );
-
-  select.innerHTML = `
-    <option value="">
-      -- Pilih Kawasan --
-    </option>
-  `;
-
-
-  DELIVERY.forEach(item => {
-
-    const option =
-      document.createElement("option");
-
-    option.value =
-      item.kawasan;
-
-    option.dataset.caj =
-      item.caj;
-
-    option.textContent =
-      `${item.kawasan} — ${money(item.caj)}`;
-
-    select.appendChild(option);
-
-  });
-
-}
-
-
-/* =========================================================
-   MENU CART
-========================================================= */
 
 function updateCart(id, change) {
-
   const current =
     cart[id] || 0;
 
   const newQty =
-    Math.max(
-      0,
-      current + change
-    );
-
+    Math.max(0, current + change);
 
   if (newQty === 0) {
-
     delete cart[id];
-
   } else {
-
-    cart[id] =
-      newQty;
-
+    cart[id] = newQty;
   }
 
-
-  const qtyEl =
-    document.getElementById(
-      "qty-" + id
-    );
-
+  const qtyEl = document.getElementById("qty-" + id);
   if (qtyEl) {
-
-    qtyEl.innerText =
-      newQty;
-
+    qtyEl.innerText = newQty;
   }
-
 
   renderSummary();
-
 }
 
-
-/* =========================================================
-   TOTAL
-========================================================= */
-
 function getTotals() {
-
   let count = 0;
   let subtotal = 0;
 
+  Object.entries(cart).forEach(([id, qty]) => {
+    const item =
+      MENU.find(m => m.id === id);
 
-  /* MENU */
-
-  Object.entries(cart).forEach(
-    ([id, qty]) => {
-
-      const item =
-        MENU.find(
-          m => m.id === id
-        );
-
-      if (item) {
-
-        count += qty;
-
-        subtotal +=
-          item.harga * qty;
-
-      }
-
+    if (item) {
+      count += qty;
+      subtotal +=
+        item.harga * qty;
     }
-  );
-
-
-  /* ADDON */
-
-  Object.entries(addonCart).forEach(
-    ([id, qty]) => {
-
-      const item =
-        ADDONS.find(
-          a => a.id === id
-        );
-
-      if (item) {
-
-        count += qty;
-
-        subtotal +=
-          item.harga * qty;
-
-      }
-
-    }
-  );
-
-
-  /* DELIVERY */
+  });
 
   const select =
-    document.getElementById(
-      "select-kawasan"
-    );
+    document.getElementById("select-kawasan");
 
-  let deliveryFee = 0;
+  const selected =
+    select.options[select.selectedIndex];
 
-
-  if (select && select.value) {
-
-    const selected =
-      select.options[
-        select.selectedIndex
-      ];
-
-    if (
-      selected &&
-      selected.dataset.caj
-    ) {
-
-      deliveryFee =
-        Number(
-          selected.dataset.caj
-        );
-
-    }
-
-  }
-
+  const deliveryFee =
+    selected && selected.dataset.caj
+      ? Number(selected.dataset.caj)
+      : 0;
 
   return {
-
     count,
-
     subtotal,
-
     deliveryFee,
-
     total:
-      subtotal +
-      deliveryFee
-
+      subtotal + deliveryFee
   };
-
 }
 
-
-/* =========================================================
-   SUMMARY
-========================================================= */
-
 function renderSummary() {
-
   const totals =
     getTotals();
-
 
   document.getElementById(
     "cart-btn-info"
   ).innerText =
     currentView === "menu"
-      ? `${totals.count} ITEM • ${money(totals.subtotal)}`
-      : `JUMLAH: ${money(totals.total)}`;
-
+      ? `${totals.count} ITEM • RM ${totals.subtotal.toFixed(2)}`
+      : `JUMLAH: RM ${totals.total.toFixed(2)}`;
 
   document.getElementById(
     "cart-btn-label"
@@ -1037,125 +414,51 @@ function renderSummary() {
       ? `CHECKOUT →`
       : `ORDER VIA WHATSAPP`;
 
-
   document.getElementById(
     "summary-subtotal"
   ).innerText =
-    money(totals.subtotal);
-
+    `RM ${totals.subtotal.toFixed(2)}`;
 
   document.getElementById(
     "summary-delivery"
   ).innerText =
-    money(totals.deliveryFee);
-
+    `RM ${totals.deliveryFee.toFixed(2)}`;
 
   document.getElementById(
     "summary-total"
   ).innerText =
-    money(totals.total);
-
+    `RM ${totals.total.toFixed(2)}`;
 
   const list =
     document.getElementById(
       "checkout-items-list"
     );
 
+  if (Object.keys(cart).length === 0) {
+    list.innerHTML = `<p class="text-gray-400 text-xs italic py-1">Tiada item dipilih</p>`;
+  } else {
+    list.innerHTML =
+      Object.entries(cart).map(([id, qty]) => {
+        const item =
+          MENU.find(m => m.id === id);
 
-  const lines = [];
-
-
-  /* MENU */
-
-  Object.entries(cart).forEach(
-    ([id, qty]) => {
-
-      const item =
-        MENU.find(
-          m => m.id === id
-        );
-
-      if (!item) return;
-
-
-      lines.push(`
-
-        <div class="flex justify-between items-center py-1 gap-3">
-
-          <span class="font-medium text-gray-800">
-            <span class="font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded mr-1.5 text-xs">
-              ${qty}x
+        return `
+          <div class="flex justify-between items-center py-1">
+            <span class="font-medium text-gray-800">
+              <span class="font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded mr-1.5 text-xs">${qty}x</span> ${item.nama}
             </span>
-            ${item.nama}
-          </span>
-
-          <span class="font-semibold text-gray-900 whitespace-nowrap">
-            ${money(item.harga * qty)}
-          </span>
-
-        </div>
-
-      `);
-
-    }
-  );
-
-
-  /* ADDONS */
-
-  Object.entries(addonCart).forEach(
-    ([id, qty]) => {
-
-      const item =
-        ADDONS.find(
-          a => a.id === id
-        );
-
-      if (!item) return;
-
-
-      lines.push(`
-
-        <div class="flex justify-between items-center py-1 gap-3">
-
-          <span class="font-medium text-gray-800">
-            <span class="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded mr-1.5 text-xs">
-              ADD-ON
+            <span class="font-semibold text-gray-900">
+              RM ${(item.harga * qty).toFixed(2)}
             </span>
-            ${item.nama}
-          </span>
-
-          <span class="font-semibold text-gray-900 whitespace-nowrap">
-            + ${money(item.harga)}
-          </span>
-
-        </div>
-
-      `);
-
-    }
-  );
-
-
-  list.innerHTML =
-    lines.length
-      ? lines.join("")
-      : `<p class="text-gray-400 text-xs italic py-1">
-          Tiada item dipilih
-        </p>`;
-
+          </div>
+        `;
+      }).join("");
+  }
 }
 
-
-/* =========================================================
-   VIEW
-========================================================= */
-
 function switchView(view) {
-
   currentView =
     view;
-
 
   document.getElementById(
     "view-menu"
@@ -1164,7 +467,6 @@ function switchView(view) {
     view !== "menu"
   );
 
-
   document.getElementById(
     "view-checkout"
   ).classList.toggle(
@@ -1172,91 +474,56 @@ function switchView(view) {
     view !== "checkout"
   );
 
-
   renderSummary();
-
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
-/* =========================================================
-   CART BUTTON
-========================================================= */
-
 function handleCartAction() {
-
   const totals =
     getTotals();
 
-
-  if (Object.keys(cart).length === 0) {
-
+  if (totals.count === 0) {
     alert(
       "Sila pilih sekurang-kurangnya satu menu."
     );
-
     return;
-
   }
-
 
   if (currentView === "menu") {
-
     switchView("checkout");
-
   } else {
-
     processOrder();
-
   }
-
 }
 
-
-/* =========================================================
-   ORDER
-========================================================= */
-
 async function processOrder() {
-
   const nama =
     document.getElementById(
       "input-nama"
     ).value.trim();
-
 
   const whatsapp =
     document.getElementById(
       "input-wa"
     ).value.trim();
 
-
   const tarikh =
     document.getElementById(
       "input-tarikh"
     ).value;
-
 
   const kawasanSelect =
     document.getElementById(
       "select-kawasan"
     );
 
-
   const kawasan =
     kawasanSelect.value;
-
 
   const lokasi =
     document.getElementById(
       "input-lokasi"
     ).value.trim();
-
 
   if (
     !nama ||
@@ -1265,34 +532,14 @@ async function processOrder() {
     !kawasan ||
     !lokasi
   ) {
-
     alert(
       "Sila lengkapkan semua maklumat penghantaran."
     );
-
     return;
-
   }
-
-
-  if (Object.keys(cart).length === 0) {
-
-    alert(
-      "Sila pilih sekurang-kurangnya satu menu."
-    );
-
-    return;
-
-  }
-
 
   const totals =
     getTotals();
-
-
-  /* =========================
-     ORDER ID
-  ========================= */
 
   const orderId =
     "NB-" +
@@ -1301,125 +548,57 @@ async function processOrder() {
       Math.random() * 900000
     );
 
-
-  /* =========================
-     PESANAN
-  ========================= */
-
   const pesananArray = [];
-
-
-  /* MENU */
 
   Object.entries(cart).forEach(
     ([id, qty]) => {
-
       const item =
         MENU.find(
           m => m.id === id
         );
 
       if (item) {
-
         pesananArray.push(
           `${qty}x ${item.nama}`
         );
-
       }
-
     }
   );
-
-
-  /* ADDON */
-
-  Object.entries(addonCart).forEach(
-    ([id, qty]) => {
-
-      const item =
-        ADDONS.find(
-          a => a.id === id
-        );
-
-      if (item) {
-
-        pesananArray.push(
-          `1x ${item.nama}`
-        );
-
-      }
-
-    }
-  );
-
 
   const pesanan =
     pesananArray.join(", ");
 
-
-  /* =========================
-     DATA BACKEND
-  ========================= */
-
   const orderData = {
-
     orderId,
-
     nama,
-
     whatsapp,
-
     kawasan,
-
     lokasi,
-
     tarikh,
-
     pesanan,
-
     jumlah:
       `RM ${totals.total.toFixed(2)}`
-
   };
 
-
-  /* =========================
-     POST KE WORKER
-     URL KEKAL
-  ========================= */
-
   try {
-
     await fetch(
       WORKER_URL,
       {
         method: "POST",
-
         headers: {
           "Content-Type":
             "application/json"
         },
-
         body:
-          JSON.stringify(
-            orderData
-          )
+          JSON.stringify(orderData)
       }
     );
-
   } catch (error) {
-
     console.log(
       "Simpanan order:",
       error
     );
-
   }
-
-
-  /* =========================
-     WHATSAPP
-  ========================= */
 
   let msg =
     `*ORDER NASI BUKUH*\n`;
@@ -1448,16 +627,12 @@ async function processOrder() {
   msg +=
     `*PESANAN:*\n`;
 
-
   pesananArray.forEach(
     item => {
-
       msg +=
         `- ${item}\n`;
-
     }
   );
-
 
   msg +=
     `\n*Subtotal:* RM ${totals.subtotal.toFixed(2)}\n`;
@@ -1474,47 +649,12 @@ async function processOrder() {
   msg +=
     `_Bayaran akan diuruskan secara manual melalui WhatsApp._`;
 
-
   const waUrl =
     `https://wa.me/${NO_WHATSAPP_PENJUAL}?text=${encodeURIComponent(msg)}`;
 
-
   window.location.href =
     waUrl;
-
 }
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-window.addEventListener(
-  "DOMContentLoaded",
-  function() {
-
-    const tomorrow =
-      new Date();
-
-    tomorrow.setDate(
-      tomorrow.getDate() + 1
-    );
-
-
-    document.getElementById(
-      "input-tarikh"
-    ).value =
-      tomorrow
-        .toISOString()
-        .split("T")[0];
-
-
-    loadGoogleSheetData();
-
-  }
-);
-
 </script>
-
 </body>
 </html>
