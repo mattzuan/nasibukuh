@@ -361,6 +361,71 @@ textarea.field {
     box-shadow:0 20px 60px rgba(0,0,0,.12);
   }
 }
+/* ================================
+   MAKLUMAT PENGHANTARAN
+================================ */
+
+.delivery-form {
+  width: 100%;
+}
+
+.delivery-form label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.delivery-form textarea {
+  display: block;
+  width: 100%;
+  min-height: 90px;
+  box-sizing: border-box;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.delivery-form select {
+  display: block;
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+}
+
+
+/* ================================
+   RINGKASAN ORDER
+================================ */
+
+.order-summary {
+  width: 100%;
+  margin-top: 20px;
+  padding: 18px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: #f8f8f8;
+}
+
+.order-summary h3 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.order-summary .summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.order-summary .summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+  font-weight: 800;
+  font-size: 20px;
+}  
 </style>
 </head>
 
@@ -403,13 +468,22 @@ textarea.field {
   </section>
 
 <section class="section">
+
   <div class="section-title">
-    <span class="number">1</span> Maklumat anda
+    <span class="number">1</span>
+    Maklumat anda
   </div>
 
-  <!-- ALAMAT PENGHANTARAN -->
-  <div class="form-group">
-    <label for="deliveryAddress">Alamat Penghantaran</label>
+
+  <!-- ================================
+       MAKLUMAT PENGHANTARAN
+  ================================= -->
+
+  <div class="delivery-form">
+
+    <label for="deliveryAddress">
+      Alamat Penghantaran
+    </label>
 
     <!-- Alamat penuh -->
     <textarea
@@ -420,36 +494,77 @@ textarea.field {
       required
     ></textarea>
 
-    <!-- Pilih kawasan -->
+
+    <!-- Kawasan di bawah alamat -->
     <select
       id="deliveryArea"
       name="deliveryArea"
       required
     >
       <option value="">Pilih kawasan</option>
-      <option value="Kuala Selangor">Kuala Selangor</option>
-      <option value="Tanjung Karang">Tanjung Karang</option>
-      <option value="Bestari Jaya">Bestari Jaya</option>
-      <option value="Ijok">Ijok</option>
+
+      <option value="Kuala Selangor">
+        Kuala Selangor
+      </option>
+
+      <option value="Tanjung Karang">
+        Tanjung Karang
+      </option>
+
+      <option value="Bestari Jaya">
+        Bestari Jaya
+      </option>
+
+      <option value="Ijok">
+        Ijok
+      </option>
     </select>
+
   </div>
 
-  <!-- CAJ DELIVERY -->
-  <div class="summary-row delivery">
-    <span>Caj Delivery</span>
-    <strong id="deliveryFee">RM0.00</strong>
+
+  <!-- ================================
+       RINGKASAN ORDER
+  ================================= -->
+
+  <div class="order-summary">
+
+    <h3>Ringkasan Order</h3>
+
+    <div class="summary-row">
+      <span>Nasi Bukuh × <span id="summaryQty">1</span></span>
+      <strong id="summaryProduct">RM8.00</strong>
+    </div>
+
+    <div class="summary-row">
+      <span id="summaryDeliveryLabel">
+        Caj Delivery
+      </span>
+
+      <strong id="deliveryFee">
+        RM0.00
+      </strong>
+    </div>
+
+    <div class="summary-total">
+      <span>TOTAL</span>
+
+      <strong id="total">
+        RM8.00
+      </strong>
+    </div>
+
   </div>
 
-  <!-- TOTAL -->
-  <div class="total">
-    <span class="total-label">TOTAL</span>
-    <span class="total-price" id="total">RM8.00</span>
-  </div>
+
+  <!-- NOTA DELIVERY -->
 
   <div class="note">
     🛵 <b>Delivery sahaja.</b><br>
     Caj delivery dikira mengikut kawasan penghantaran.
   </div>
+
+</section>
 
 </section>
 
@@ -495,9 +610,9 @@ const PRICE = 8;
 let qty = 1;
 
 
-/* =========================================
-   CAJ DELIVERY MENGIKUT KAWASAN
-========================================= */
+/* ================================
+   CAJ DELIVERY
+================================ */
 
 const deliveryRates = {
   "Kuala Selangor": 5,
@@ -507,55 +622,55 @@ const deliveryRates = {
 };
 
 
-/* =========================================
-   FORMAT DUIT
-========================================= */
+/* ================================
+   FORMAT RM
+================================ */
 
 function money(value) {
   return "RM" + Number(value).toFixed(2);
 }
 
 
-/* =========================================
+/* ================================
    QUANTITY
-========================================= */
+================================ */
 
 function changeQty(change) {
 
   qty = Math.max(1, qty + change);
 
-  const qtyElement =
+  const qtyEl =
     document.getElementById("qty");
 
-  const summaryQtyElement =
+  const summaryQtyEl =
     document.getElementById("summaryQty");
 
-  if (qtyElement) {
-    qtyElement.textContent = qty;
+  if (qtyEl) {
+    qtyEl.textContent = qty;
   }
 
-  if (summaryQtyElement) {
-    summaryQtyElement.textContent = qty;
+  if (summaryQtyEl) {
+    summaryQtyEl.textContent = qty;
   }
 
   updateTotal();
 }
 
 
-/* =========================================
-   KIRA TOTAL
-========================================= */
+/* ================================
+   UPDATE TOTAL
+================================ */
 
 function updateTotal() {
 
   const productTotal =
     PRICE * qty;
 
-  const areaElement =
+  const areaEl =
     document.getElementById("deliveryArea");
 
   const area =
-    areaElement ? areaElement.value : "";
+    areaEl ? areaEl.value : "";
 
   const delivery =
     deliveryRates[area] || 0;
@@ -564,50 +679,61 @@ function updateTotal() {
     productTotal + delivery;
 
 
-  /* Subtotal jika wujud */
-  const subtotalElement =
-    document.getElementById("subtotal");
-
-  if (subtotalElement) {
-    subtotalElement.textContent =
-      money(productTotal);
-  }
-
-
-  /* Harga produk dalam ringkasan jika wujud */
-  const summaryProductElement =
+  /* Harga produk */
+  const productEl =
     document.getElementById("summaryProduct");
 
-  if (summaryProductElement) {
-    summaryProductElement.textContent =
+  if (productEl) {
+    productEl.textContent =
       money(productTotal);
   }
 
 
   /* Caj delivery */
-  const deliveryFeeElement =
+  const deliveryEl =
     document.getElementById("deliveryFee");
 
-  if (deliveryFeeElement) {
-    deliveryFeeElement.textContent =
+  if (deliveryEl) {
+    deliveryEl.textContent =
       money(delivery);
   }
 
 
+  /* Label caj delivery */
+  const deliveryLabel =
+    document.getElementById(
+      "summaryDeliveryLabel"
+    );
+
+  if (deliveryLabel) {
+
+    deliveryLabel.textContent =
+      area
+        ? "Caj Delivery (" + area + ")"
+        : "Caj Delivery";
+  }
+
+
   /* TOTAL */
-  const totalElement =
+  const totalEl =
     document.getElementById("total");
 
-  if (totalElement) {
-    totalElement.textContent =
+  if (totalEl) {
+    totalEl.textContent =
       money(total);
   }
+
+
+  /* Untuk WhatsApp */
+  window.selectedDeliveryArea = area;
+  window.selectedDeliveryFee = delivery;
+  window.finalOrderTotal = total;
 }
 
 
-/* =========================================
-   BILA CUSTOMER PILIH KAWASAN
-========================================= */
+/* ================================
+   PILIH KAWASAN
+================================ */
 
 const deliveryArea =
   document.getElementById("deliveryArea");
@@ -616,95 +742,47 @@ if (deliveryArea) {
 
   deliveryArea.addEventListener(
     "change",
-    function () {
-      updateTotal();
-    }
+    updateTotal
   );
-
 }
 
 
-/* =========================================
-   ORDER VIA WHATSAPP
-========================================= */
+/* ================================
+   WHATSAPP
+================================ */
 
 function orderWhatsApp() {
 
-  const nameElement =
+  const nameEl =
     document.getElementById("name");
 
-  const phoneElement =
+  const phoneEl =
     document.getElementById("phone");
 
-  const addressElement =
+  const addressEl =
     document.getElementById("deliveryAddress");
 
-  const noteElement =
+  const noteEl =
     document.getElementById("note");
 
 
   const name =
-    nameElement
-      ? nameElement.value.trim()
-      : "";
+    nameEl ? nameEl.value.trim() : "";
 
   const phone =
-    phoneElement
-      ? phoneElement.value.trim()
-      : "";
+    phoneEl ? phoneEl.value.trim() : "";
 
   const address =
-    addressElement
-      ? addressElement.value.trim()
-      : "";
+    addressEl ? addressEl.value.trim() : "";
 
   const note =
-    noteElement
-      ? noteElement.value.trim()
-      : "";
+    noteEl ? noteEl.value.trim() : "";
 
 
-  /* Kawasan */
-  const area =
+  const areaEl =
     document.getElementById("deliveryArea");
 
 
-  if (!area || !area.value) {
-
-    alert(
-      "Sila pilih kawasan penghantaran."
-    );
-
-    if (area) {
-      area.focus();
-    }
-
-    return;
-  }
-
-
-  const areaText =
-    area.options[
-      area.selectedIndex
-    ].text;
-
-
-  /* Caj delivery */
-  const delivery =
-    deliveryRates[area.value] || 0;
-
-
-  /* Harga makanan */
-  const productTotal =
-    PRICE * qty;
-
-
-  /* Jumlah akhir */
-  const total =
-    productTotal + delivery;
-
-
-  /* Semak maklumat */
   if (!name || !phone || !address) {
 
     alert(
@@ -715,18 +793,37 @@ function orderWhatsApp() {
   }
 
 
-  /* =====================================
-     NOMBOR WHATSAPP BISNES
-     GANTI DENGAN NOMBOR SEBENAR
-  ===================================== */
+  if (!areaEl || !areaEl.value) {
+
+    alert(
+      "Sila pilih kawasan penghantaran."
+    );
+
+    return;
+  }
+
+
+  const areaText =
+    areaEl.options[
+      areaEl.selectedIndex
+    ].text;
+
+
+  const delivery =
+    deliveryRates[areaEl.value] || 0;
+
+
+  const productTotal =
+    PRICE * qty;
+
+
+  const total =
+    productTotal + delivery;
+
 
   const businessNumber =
     "60123456789";
 
-
-  /* =====================================
-     MESEJ WHATSAPP
-  ===================================== */
 
   const message =
 `🍚 *ORDER NASI BUKUH*
@@ -756,13 +853,12 @@ ${note || "-"}`;
     encodeURIComponent(message),
     "_blank"
   );
-
 }
 
 
-/* =========================================
-   KIRA NILAI AWAL
-========================================= */
+/* ================================
+   MULA
+================================ */
 
 updateTotal();
 
