@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NASI BUKUH — Order Sekarang</title>
+<title>Nasi Bukuh Ayam Cincang — Order Sekarang</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -217,6 +217,78 @@ textarea.field {
   resize:vertical;
 }
 
+.field-wrap {
+  position:relative;
+  width:100%;
+}
+
+.field-icon {
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:2;
+  font-size:16px;
+  pointer-events:none;
+}
+
+.whatsapp-field-icon {
+  width:20px;
+  height:20px;
+  color:#25D366;
+}
+.whatsapp-field-icon svg {
+  width:20px;
+  height:20px;
+  display:block;
+  fill:currentColor;
+}
+
+.field.with-icon {
+  padding-left:42px;
+}
+
+.field-wrap.full {
+  grid-column:1 / -1;
+}
+
+.area-select {
+  appearance:auto;
+  cursor:pointer;
+}
+
+.additional-note {
+  margin-top:15px;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#FFFDF7;
+}
+
+.additional-note label {
+  display:block;
+  margin-bottom:8px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.additional-note label span {
+  color:var(--muted);
+  font-weight:500;
+}
+
+.additional-note textarea {
+  min-height:76px;
+}
+
+.final-total {
+  margin-top:14px;
+}
+
+.card-info, .card-address, .card-summary {
+  scroll-margin-top:20px;
+}
+
 .field:focus {
   border-color:var(--yellow);
   box-shadow:0 0 0 3px rgba(255,196,0,.18);
@@ -296,14 +368,19 @@ textarea.field {
 }
 
 .whatsapp {
+  display:inline-grid;
+  place-items:center;
   width:34px;
   height:34px;
-  border:2px solid #fff;
+  border:0;
   border-radius:50%;
+  background:#25D366;
+  color:#fff;
   display:grid;
   place-items:center;
   font-size:17px;
 }
+.whatsapp svg { width:22px; height:22px; display:block; }
 
 .cta-main {
   font-size:17px;
@@ -361,91 +438,17 @@ textarea.field {
     box-shadow:0 20px 60px rgba(0,0,0,.12);
   }
 }
-/* ================================
-   MAKLUMAT PENGHANTARAN
-================================ */
-
-.delivery-form textarea {
-  display: block;
-  width: 100%;
-  min-height: 90px;
-  box-sizing: border-box;
-  resize: vertical;
-  margin-bottom: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 16px;
-  padding: 12px;
-  background: #f9fafb;
-  font-family: inherit;
-  font-size: 14px;
-  outline: none;
-}
-
-.delivery-form textarea:focus {
-  border-color: #16a34a;
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
-}
-
-.delivery-form select {
-  display: block;
-  width: 100%;
-  height: 48px;
-  box-sizing: border-box;
-  border: 1px solid #d1d5db;
-  border-radius: 16px;
-  padding: 0 12px;
-  background: #f9fafb;
-  font-family: inherit;
-  font-size: 14px;
-  outline: none;
-}
-
-.delivery-form select:focus {
-  border-color: #16a34a;
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
-}
-
-
-/* ================================
-   RINGKASAN ORDER
-================================ */
-
-.order-summary {
-  width: 100%;
-  margin-top: 20px;
-  padding: 18px;
-  box-sizing: border-box;
-  border-radius: 16px;
-  background: #f8f8f8;
-}
-
-.order-summary h3 {
-  margin: 0 0 14px;
-  font-size: 18px;
-}
-
-.order-summary .summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.order-summary .summary-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  padding-top: 12px;
-  border-top: 1px solid #ddd;
-  font-weight: 800;
-  font-size: 20px;
-}  
 </style>
 </head>
 
 <body>
 <div class="app">
+
+  <header class="top">
+    <div class="brand-row">
+      <div>
+        <div class="brand">NASI BUKUH</div>
+        <div class="tagline">Make sebukuh, esok nok lagi.</div>
       </div>
       <div class="delivery-badge">🛵 DELIVERY ONLY</div>
     </div>
@@ -459,8 +462,8 @@ textarea.field {
     <div class="product-grid">
       <div>
         <div class="product-name">Nasi Bukuh Ayam Cincang</div>
-        <div class="description">Nasi putih + ayam goreng cincang + gulai khopeh + sambal + timun</div>
-        <div class="price">RM8.00 <span>/ bungkus</span></div>
+        <div class="description">Nasi putih + ayam berempah + sambal + sayur + budu</div>
+        <div class="price">RM8.00<span>/bungkus</span></div>
       </div>
 
       <div class="qty" aria-label="Kuantiti">
@@ -474,369 +477,170 @@ textarea.field {
       <span>Subtotal</span>
       <strong id="subtotal">RM8.00</strong>
     </div>
+
+    <!-- Nota Tambahan: diletakkan terus di bawah Subtotal PRODUCT CARD -->
+    <div class="additional-note">
+      <label for="note">Nota Tambahan <span>(optional)</span></label>
+      <textarea class="field" id="note" placeholder="Contoh: Letak di pagar, kurang pedas, dll."></textarea>
+    </div>
   </section>
 
-<section class="section">
+  <!-- ======================================================
+       SECTION 1 : MAKLUMAT ANDA
+       ====================================================== -->
+  <section class="section card-info" id="customer-section">
+    <div class="section-title"><span class="number">1</span> Maklumat Anda</div>
 
-  <div class="section-title">
-    <span class="number">1</span>
-    Maklumat anda
-  </div>
-<div class="input-grid">
-      <input class="field" id="name" placeholder="Nama" autocomplete="name">
-      <input class="field" id="phone" placeholder="No. WhatsApp" inputmode="tel" autocomplete="tel">
+    <div class="input-grid">
+      <div class="field-wrap">
+        <span class="field-icon">👤</span>
+        <input class="field with-icon" id="name" placeholder="Nama" autocomplete="name">
+      </div>
 
-
-  <!-- ================================
-       MAKLUMAT PENGHANTARAN
-  ================================= -->
-
-  <div class="delivery-form">
-
-    <label for="deliveryAddress">
-      Alamat Penghantaran
-    </label>
-
-    <!-- Alamat penuh -->
-    <textarea
-      id="deliveryAddress"
-      name="deliveryAddress"
-      rows="3"
-      placeholder="No rumah, nama jalan, taman..."
-      required
-    ></textarea>
-
-    <!-- Kawasan di bawah alamat -->
-    <select
-      id="deliveryArea"
-      name="deliveryArea"
-      required
-    >
-      <option value="">Pilih kawasan</option>
-
-      <option value="Kuala Selangor">
-        Kuala Selangor
-      </option>
-
-      <option value="Tanjung Karang">
-        Tanjung Karang
-      </option>
-
-      <option value="Bestari Jaya">
-        Bestari Jaya
-      </option>
-
-      <option value="Ijok">
-        Ijok
-      </option>
-    </select>
-
-   <textarea class="field full" id="note" placeholder="Nota tambahan (pilihan)"></textarea> 
-    
-  </div>
-
-
-  <!-- ================================
-       RINGKASAN ORDER
-  ================================= -->
-
-  <div class="order-summary">
-
-    <h3>Ringkasan Order</h3>
-
-    <div class="summary-row">
-      <span>Nasi Bukuh × <span id="summaryQty">1</span></span>
-      <strong id="summaryProduct">RM8.00</strong>
+      <div class="field-wrap">
+        <span class="field-icon whatsapp-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32" role="img"><path d="M16 3.2A12.8 12.8 0 0 0 5.02 22.58L3.2 28.8l6.38-1.77A12.8 12.8 0 1 0 16 3.2zm0 23.27c-2.01 0-3.98-.54-5.7-1.56l-.41-.24-3.79 1.05 1.02-3.69-.27-.43A10.42 10.42 0 1 1 16 26.47z" fill="currentColor"/><path d="M19.11 17.17c-.29-.14-1.71-.84-1.98-.94-.27-.1-.46-.14-.66.14-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.14-1.21-.45-2.3-1.43-.85-.76-1.43-1.7-1.6-1.99-.17-.29-.02-.44.13-.58.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.66-1.58-.9-2.17-.24-.57-.48-.49-.66-.5h-.56c-.19 0-.51.07-.77.36-.27.29-1.02.99-1.02 2.41s1.04 2.8 1.19 3c.14.19 2.04 3.11 4.94 4.36.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.12.55-.08 1.71-.7 1.95-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.19-.56-.34z" fill="currentColor"/></svg></span>
+        <input class="field with-icon" id="phone" placeholder="No. WhatsApp" inputmode="tel" autocomplete="tel">
+      </div>
     </div>
+  </section>
 
-    <div class="summary-row">
-      <span id="summaryDeliveryLabel">
-        Caj Delivery
+  <!-- ======================================================
+       SECTION 2 : ALAMAT PENGHANTARAN
+       ====================================================== -->
+  <section class="section card-address" id="address-section">
+    <div class="section-title"><span class="number">2</span> Alamat Penghantaran</div>
+
+    <div class="input-grid">
+      <div class="field-wrap full">
+        <span class="field-icon">📍</span>
+        <input class="field with-icon" id="address" placeholder="No. Rumah, Jalan/Taman" autocomplete="street-address">
+      </div>
+
+      <div class="field-wrap full">
+        <span class="field-icon">📌</span>
+        <select class="field with-icon area-select" id="area" onchange="updateTotal()">
+          <option value="" disabled selected>Pilih Kawasan</option>
+          <option value="5">Kuala Selangor</option>
+          <option value="5">Tanjung Karang</option>
+          <option value="7">Bestari Jaya</option>
+          <option value="7">Ijok</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       SECTION 3 : RINGKASAN PESANAN
+       ====================================================== -->
+  <section class="section card-summary" id="summary-section">
+    <div class="section-title"><span class="number">3</span> 🛒 Ringkasan Pesanan</div>
+
+    <div class="summary">
+      <!-- Details order -->
+      <div class="summary-row">
+        <span>Nasi Bukuh Ayam Cincang</span>
+        <span>× <b id="summaryQty">1</b></span>
+        <strong id="summaryProduct">RM8.00</strong>
+      </div>
+
+      <!-- Caj delivery dikira automatik berdasarkan kawasan -->
+      <div class="summary-row delivery">
+        <span>Caj Delivery</span>
+        <strong id="deliveryFee">-</strong>
+      </div>
+
+      <div class="total">
+        <span class="total-label">Subtotal</span>
+        <span class="total-price" id="subtotalSummary">RM8.00</span>
+      </div>
+
+      <div class="total final-total">
+        <span class="total-label">TOTAL</span>
+        <span class="total-price" id="total">RM8.00</span>
+      </div>
+
+      <div class="note">
+        🛵 <b>Delivery sahaja.</b><br>
+        Caj delivery dikira mengikut kawasan penghantaran.
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-wrap">
+    <button class="cta" type="button" onclick="orderWhatsApp()">
+      <span class="whatsapp" aria-hidden="true"><svg viewBox="0 0 32 32" role="img"><path d="M19.11 17.17c-.29-.14-1.71-.84-1.98-.94-.27-.1-.46-.14-.66.14-.19.29-.75.94-.92 1.13-.17.19-.34.22-.63.07-.29-.14-1.21-.45-2.3-1.43-.85-.76-1.43-1.7-1.6-1.99-.17-.29-.02-.44.13-.58.13-.13.29-.34.43-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.66-1.58-.9-2.17-.24-.57-.48-.49-.66-.5h-.56c-.19 0-.51.07-.77.36-.27.29-1.02.99-1.02 2.41s1.04 2.8 1.19 3c.14.19 2.04 3.11 4.94 4.36.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.12.55-.08 1.71-.7 1.95-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.19-.56-.34z" fill="currentColor"/><path d="M16 3.2A12.8 12.8 0 0 0 5.02 22.58L3.2 28.8l6.38-1.77A12.8 12.8 0 1 0 16 3.2zm0 23.27c-2.01 0-3.98-.54-5.7-1.56l-.41-.24-3.79 1.05 1.02-3.69-.27-.43A10.42 10.42 0 1 1 16 26.47z" fill="currentColor"/></svg></span>
+      <span>
+        <span class="cta-main">ORDER SEKARANG</span>
+        <span class="cta-sub">Via WhatsApp</span>
       </span>
+    </button>
+  </div>
 
-      <strong id="deliveryFee">
-        RM0.00
-      </strong>
+  <div class="benefits">
+    <div class="benefit">
+      <div class="benefit-icon">🌱</div>
+      <strong>Fresh</strong>
+      Masak segar
     </div>
-
-    <div class="summary-total">
-      <span>TOTAL</span>
-
-      <strong id="total">
-        RM8.00
-      </strong>
+    <div class="benefit">
+      <div class="benefit-icon">🔥</div>
+      <strong>Preorder</strong>
+      Tempah lebih awal
     </div>
-
-  </div>
-
-
-  <!-- NOTA DELIVERY -->
-
-  <div class="note">
-    🛵 <b>Delivery sahaja.</b><br>
-    Caj delivery dikira mengikut kawasan penghantaran.
-  </div>
-
-</section>
-
-</section>
-
-
-<div class="cta-wrap">
-  <button class="cta" type="button" onclick="orderWhatsApp()">
-    <span class="whatsapp">◔</span>
-    <span>
-      <span class="cta-main">ORDER SEKARANG</span>
-    </span>
-  </button>
-</div>
-
-
-<div class="benefits">
-
-  <div class="benefit">
-    <div class="benefit-icon">🌱</div>
-    <strong>Fresh</strong>
-    Masak segar
-  </div>
-
-  <div class="benefit">
-    <div class="benefit-icon">🔥</div>
-    <strong>Preorder</strong>
-    Tempah lebih awal
-  </div>
-
-  <div class="benefit">
-    <div class="benefit-icon">🛵</div>
-    <strong>Hantar pantas</strong>
-    Sampai panas
+    <div class="benefit">
+      <div class="benefit-icon">🛵</div>
+      <strong>Hantar cepat</strong>
+      Sampai panas
+    </div>
   </div>
 
 </div>
-
-</div>
-
 
 <script>
-
 const PRICE = 8;
 let qty = 1;
 
-
-/* ================================
-   CAJ DELIVERY
-================================ */
-
-const deliveryRates = {
-  "Kuala Selangor": 5,
-  "Tanjung Karang": 7,
-  "Bestari Jaya": 8,
-  "Ijok": 6
-};
-
-
-/* ================================
-   FORMAT RM
-================================ */
-
 function money(value) {
-  return "RM" + Number(value).toFixed(2);
+  return "RM" + value.toFixed(2);
 }
 
-
-/* ================================
-   QUANTITY
-================================ */
-
 function changeQty(change) {
-
   qty = Math.max(1, qty + change);
-
-  const qtyEl =
-    document.getElementById("qty");
-
-  const summaryQtyEl =
-    document.getElementById("summaryQty");
-
-  if (qtyEl) {
-    qtyEl.textContent = qty;
-  }
-
-  if (summaryQtyEl) {
-    summaryQtyEl.textContent = qty;
-  }
-
+  document.getElementById("qty").textContent = qty;
+  document.getElementById("summaryQty").textContent = qty;
   updateTotal();
 }
 
-
-/* ================================
-   UPDATE TOTAL
-================================ */
-
 function updateTotal() {
+  const productTotal = PRICE * qty;
+  const areaValue = document.getElementById("area").value;
+  const delivery = areaValue === "" ? 0 : Number(areaValue);
+  const total = productTotal + delivery;
 
-  const productTotal =
-    PRICE * qty;
-
-  const areaEl =
-    document.getElementById("deliveryArea");
-
-  const area =
-    areaEl ? areaEl.value : "";
-
-  const delivery =
-    deliveryRates[area] || 0;
-
-  const total =
-    productTotal + delivery;
-
-
-  /* Harga produk */
-  const productEl =
-    document.getElementById("summaryProduct");
-
-  if (productEl) {
-    productEl.textContent =
-      money(productTotal);
-  }
-
-
-  /* Caj delivery */
-  const deliveryEl =
-    document.getElementById("deliveryFee");
-
-  if (deliveryEl) {
-    deliveryEl.textContent =
-      money(delivery);
-  }
-
-
-  /* Label caj delivery */
-  const deliveryLabel =
-    document.getElementById(
-      "summaryDeliveryLabel"
-    );
-
-  if (deliveryLabel) {
-
-    deliveryLabel.textContent =
-      area
-        ? "Caj Delivery (" + area + ")"
-        : "Caj Delivery";
-  }
-
-
-  /* TOTAL */
-  const totalEl =
-    document.getElementById("total");
-
-  if (totalEl) {
-    totalEl.textContent =
-      money(total);
-  }
-
-
-  /* Untuk WhatsApp */
-  window.selectedDeliveryArea = area;
-  window.selectedDeliveryFee = delivery;
-  window.finalOrderTotal = total;
+  document.getElementById("subtotal").textContent = money(productTotal);
+  document.getElementById("summaryProduct").textContent = money(productTotal);
+  document.getElementById("deliveryFee").textContent = areaValue === "" ? "-" : money(delivery);
+  document.getElementById("subtotalSummary").textContent = money(productTotal);
+  document.getElementById("total").textContent = money(total);
 }
-
-
-/* ================================
-   PILIH KAWASAN
-================================ */
-
-const deliveryArea =
-  document.getElementById("deliveryArea");
-
-if (deliveryArea) {
-
-  deliveryArea.addEventListener(
-    "change",
-    updateTotal
-  );
-}
-
-
-/* ================================
-   WHATSAPP
-================================ */
 
 function orderWhatsApp() {
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const note = document.getElementById("note").value.trim();
+  const area = document.getElementById("area");
+  const areaText = area.options[area.selectedIndex].text;
+  const delivery = area.value === "" ? 0 : Number(area.value);
+  const total = PRICE * qty + delivery;
 
-  const nameEl =
-    document.getElementById("name");
-
-  const phoneEl =
-    document.getElementById("phone");
-
-  const addressEl =
-    document.getElementById("deliveryAddress");
-
-  const noteEl =
-    document.getElementById("note");
-
-
-  const name =
-    nameEl ? nameEl.value.trim() : "";
-
-  const phone =
-    phoneEl ? phoneEl.value.trim() : "";
-
-  const address =
-    addressEl ? addressEl.value.trim() : "";
-
-  const note =
-    noteEl ? noteEl.value.trim() : "";
-
-
-  const areaEl =
-    document.getElementById("deliveryArea");
-
-
-  if (!name || !phone || !address) {
-
-    alert(
-      "Sila isi Nama, No. WhatsApp dan Alamat penghantaran."
-    );
-
+  if (!name || !phone || !address || !area.value) {
+    alert("Sila isi Nama, No. WhatsApp, Alamat penghantaran dan pilih Kawasan.");
     return;
   }
 
-
-  if (!areaEl || !areaEl.value) {
-
-    alert(
-      "Sila pilih kawasan penghantaran."
-    );
-
-    return;
-  }
-
-
-  const areaText =
-    areaEl.options[
-      areaEl.selectedIndex
-    ].text;
-
-
-  const delivery =
-    deliveryRates[areaEl.value] || 0;
-
-
-  const productTotal =
-    PRICE * qty;
-
-
-  const total =
-    productTotal + delivery;
-
-
-  const businessNumber =
-    "60123456789";
-
+  // Gantikan nombor ini dengan nombor WhatsApp bisnes sebenar.
+  const businessNumber = "60123456789";
 
   const message =
 `🍚 *ORDER NASI BUKUH*
@@ -845,40 +649,26 @@ Nama: ${name}
 No. WhatsApp: ${phone}
 
 *Order*
-Nasi Bukuh Ayam Cincang × ${qty} = ${money(productTotal)}
+Nasi Bukuh Ayam Cincang × ${qty} = ${money(PRICE * qty)}
 
-Kawasan: ${areaText}
 Caj Delivery: ${money(delivery)}
+Kawasan: ${areaText}
 
 *TOTAL: ${money(total)}*
 
-Alamat Penghantaran:
+Alamat:
 ${address}
 
 Nota:
 ${note || "-"}`;
 
-
   window.open(
-    "https://wa.me/" +
-    businessNumber +
-    "?text=" +
-    encodeURIComponent(message),
+    "https://wa.me/" + businessNumber + "?text=" + encodeURIComponent(message),
     "_blank"
   );
 }
 
-
-/* ================================
-   MULA
-================================ */
-
 updateTotal();
-
 </script>
-
 </body>
 </html>
-
-<!-- V2 deployment test -->
-```
