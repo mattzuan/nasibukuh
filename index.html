@@ -244,24 +244,31 @@ textarea.field {
   fill:currentColor;
 }
 
-.date-field-label {
-  position:absolute;
-  left:42px;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:2;
+.preorder-date-field {
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.date-label {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:700;
+  font-size:14px;
+  color:#222;
+  padding-left:2px;
+}
+.date-label-icon { font-size:16px; }
+.date-info {
+  margin:0 2px;
+  font-size:12px;
+  line-height:1.5;
   color:#777;
-  font-size:13px;
-  line-height:1;
-  pointer-events:none;
-  transition:opacity .15s ease;
 }
 
-.field-wrap:has(#deliveryDate:valid) .date-field-label,
-.field-wrap:has(#deliveryDate:focus) .date-field-label {
-  opacity:0;
-}
-
+/* Tarikh preorder: guna paparan native input[type=date].
+   Jangan letak placeholder/label terapung di atasnya kerana
+   browser sudah menyediakan paparan dd/mm/yyyy sendiri. */
 #deliveryDate {
   position:relative;
 }
@@ -538,10 +545,20 @@ textarea.field {
         <input class="field with-icon" id="address" placeholder="Alamat Penuh" autocomplete="street-address">
       </div>
 
-      <div class="field-wrap full">
-        <span class="field-icon">📅</span>
-        <label for="deliveryDate" class="date-field-label">Tarikh untuk Preorder</label>
-        <input class="field with-icon" id="deliveryDate" type="date" required aria-label="Tarikh untuk Preorder">
+      <div class="field-wrap full preorder-date-field">
+        <label for="deliveryDate" class="date-label">
+          <span class="date-label-icon" aria-hidden="true">📅</span>
+          <span>Tarikh Preorder</span>
+        </label>
+        <input
+          class="field"
+          id="deliveryDate"
+          type="date"
+          required
+          aria-label="Tarikh Preorder"
+          title="Pilih tarikh preorder yang tersedia."
+        >
+        <p id="dateInfo" class="date-info">Tempahan adalah PREORDER sahaja. Pilih tarikh penghantaran yang tersedia.</p>
       </div>
 
       <div class="field-wrap full">
@@ -632,7 +649,7 @@ let qty = 1;
 // BACKEND PREORDER
 // =====================================================
 // PASTE URL WEB APP APPS SCRIPT KAU DI BAWAH
-const PREORDER_API_URL = "https://script.google.com/macros/s/AKfycbykmlfYBpR0OvzQHkozruAJ6z5z-31v7C_52bW1FIrLrOm3PYqNceALyYOmq3HlgEaZEw/exec";
+const PREORDER_API_URL = "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 let preorderLoaded = false;
 let preorderData = {
