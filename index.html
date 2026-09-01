@@ -716,7 +716,8 @@ function orderWhatsApp() {
   const area = document.getElementById("area");
   const areaText = area.options[area.selectedIndex].text;
   const delivery = area.value === "" ? 0 : Number(area.value);
-  const total = PRICE * qty + delivery;
+  const subtotal = PRICE * qty;
+  const total = subtotal + delivery;
 
   if (!name || !phone || !address || !deliveryDate || !area.value) {
     alert("Sila isi Nama, No. WhatsApp, Tarikh untuk Preorder, Alamat penghantaran dan pilih Kawasan.");
@@ -727,37 +728,42 @@ function orderWhatsApp() {
     return;
   }
 
-  // Gantikan nombor ini dengan nombor WhatsApp bisnes sebenar.
+  // Nombor WhatsApp bisnes
   const businessNumber = "601156859808";
 
-  const message =
-`------------------------------
-🍚 *ORDER NASI BUKUH*
--------------------------------
+  const orderId = `NB-${Math.floor(100000 + Math.random() * 900000)}`;
 
-*Order ID:* NB-${Math.floor(100000 + Math.random() * 900000)}
-
+  let message =
+`*ORDER NASI BUKUH*
+---------------------------
+*Order ID:* ${orderId}
 *Nama:* ${name}
 *No. WhatsApp:* ${phone}
-
 *Tarikh untuk Preorder:* ${formatDeliveryDate(deliveryDate)}
-
-*Order:*
-- ${qty}x Nasi Bukuh Ayam Cincang = ${money(PRICE * qty)}
-
-*Caj Delivery:* ${money(delivery)}
 *Kawasan:* ${areaText}
+*Lokasi:* ${address}
 
-*TOTAL: ${money(total)}*
+*PESANAN:*
+- ${qty}x Nasi Bukuh Ayam Cincang
 
-*Alamat Penghantaran:*
-${address}
+*Subtotal:* ${money(subtotal)}
+*Caj Delivery:* ${money(delivery)}
+*JUMLAH:* ${money(total)}`;
 
-*Nota:*
-${note || "-"}`;
+  if (note) {
+    message += `
+
+*Nota Tambahan:*
+${note}`;
+  }
+
+  message += `
+
+---------------------------
+_Bayaran akan dibuat secara online melalui WhatsApp._`;
 
   window.location.href =
-  "https://wa.me/" + businessNumber + "?text=" + encodeURIComponent(message);
+    "https://wa.me/" + businessNumber + "?text=" + encodeURIComponent(message);
 }
 
 document.getElementById("deliveryDate").addEventListener("change", validateDeliveryDate);
