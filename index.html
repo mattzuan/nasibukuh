@@ -731,8 +731,9 @@ function orderWhatsApp() {
   const businessNumber = "601156859808";
 
   const message =
-`🍚 *ORDER NASI BUKUH*
-_________________________
+`------------------------------
+🍚 *ORDER NASI BUKUH*
+-------------------------------
 
 *Order ID:* NB-${Math.floor(100000 + Math.random() * 900000)}
 
@@ -754,7 +755,7 @@ ${address}
 
 *Nota:*
 ${note || "-"}`;
-________________________________
+
   window.location.href =
   "https://wa.me/" + businessNumber + "?text=" + encodeURIComponent(message);
 }
