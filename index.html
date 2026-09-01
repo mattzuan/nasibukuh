@@ -755,10 +755,8 @@ ${address}
 *Nota:*
 ${note || "-"}`;
 ________________________________
-  window.open(
-    "https://wa.me/" + businessNumber + "?text=" + encodeURIComponent(message),
-    "_blank"
-  );
+  window.location.href =
+  "https://wa.me/" + businessNumber + "?text=" + encodeURIComponent(message);
 }
 
 document.getElementById("deliveryDate").addEventListener("change", validateDeliveryDate);
