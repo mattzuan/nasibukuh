@@ -909,7 +909,19 @@ function renderQtyControl(item) {
 /* =====================================================
    MENU
    ===================================================== */
+function formatDescription(text) {
+  const words = String(text || "").trim().split(/\s+/);
 
+  if (words.length <= 1) return escapeHTML(text || "");
+
+  const middle = Math.ceil(words.length / 2);
+
+  const line1 = words.slice(0, middle).join(" ");
+  const line2 = words.slice(middle).join(" ");
+
+  return escapeHTML(line1) + "<br>" + escapeHTML(line2);
+}
+  
 function renderMenu() {
   const menuList = document.getElementById("menuList");
   if (!menuList) return;
@@ -936,7 +948,7 @@ function renderMenu() {
           <div class="dynamic-content">
             ${image}
             <div class="dynamic-name">${escapeHTML(item.nama)}</div>
-            <div class="dynamic-description">${escapeHTML(item.penerangan || "")}</div>
+           <div class="dynamic-description">${formatDescription(item.penerangan)}</div>
             <div class="dynamic-price">${money(item.harga)}<span>/bungkus</span></div>
           </div>
 
