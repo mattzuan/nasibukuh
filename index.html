@@ -467,9 +467,149 @@ textarea.field {
     box-shadow:0 20px 60px rgba(0,0,0,.12);
   }
 }
+
+/* =====================================================
+   DYNAMIC MENU / ADD-ON
+   ===================================================== */
+.dynamic-list {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.loading-card,
+.empty-card {
+  padding:18px;
+  text-align:center;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#fff;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.menu-card,
+.addon-card {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+}
+
+.menu-card-main,
+.addon-card-main {
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:14px;
+  align-items:center;
+}
+
+.dynamic-name {
+  font-size:17px;
+  line-height:1.25;
+  font-weight:800;
+}
+
+.dynamic-description {
+  margin-top:4px;
+  color:#6D6D6D;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.dynamic-price {
+  margin-top:8px;
+  font-size:18px;
+  font-weight:800;
+  color:#D99F00;
+}
+
+.dynamic-price span {
+  color:var(--black);
+  font-size:11px;
+  font-weight:500;
+}
+
+.dynamic-image {
+  width:74px;
+  height:74px;
+  border-radius:14px;
+  object-fit:cover;
+  margin-bottom:10px;
+}
+
+.dynamic-content {
+  min-width:0;
+}
+
+.dynamic-qty {
+  flex-shrink:0;
+}
+
+.addon-section {
+  padding-top:18px;
+}
+
+.note-section {
+  padding-top:6px;
+}
+
+.summary-empty {
+  padding:4px 0 10px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.summary-item {
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:10px;
+  align-items:center;
+  font-size:13px;
+  padding:7px 0;
+}
+
+.summary-item-name {
+  font-weight:600;
+}
+
+.summary-item-qty {
+  white-space:nowrap;
+  color:#555;
+}
+
+.summary-item-price {
+  font-weight:700;
+  white-space:nowrap;
+}
+
+@media (max-width:560px) {
+  .menu-card-main,
+  .addon-card-main {
+    grid-template-columns:1fr;
+  }
+
+  .dynamic-qty {
+    justify-self:end;
+  }
+
+  .summary-item {
+    grid-template-columns:1fr auto;
+  }
+
+  .summary-item-price {
+    grid-column:2;
+    grid-row:1;
+  }
+
+  .summary-item-qty {
+    grid-column:1;
+    grid-row:2;
+  }
+}
+
 </style>
 </head>
-
 <body>
 <div class="app">
 
@@ -488,29 +628,35 @@ textarea.field {
      src="images/nasi-sumatera.png"
      alt="Nasi Sumatera Kelate Style">
   </section>
-
-  <div id="menuList"></div>
-  <section class="product-card">
-    <div class="product-grid">
-      <div>
-        <div class="product-name">Nasi Sumatera</div>
-        <div class="description">Nasi putih + ayam goreng special + gulai khopeh + sambal + timun</div>
-        <div class="price">RM8.00<span>/bungkus</span></div>
-      </div>
-
-      <div class="qty" aria-label="Kuantiti">
-        <button type="button" onclick="changeQty(-1)">−</button>
-        <div class="qty-value" id="qty">1</div>
-        <button type="button" onclick="changeQty(1)">+</button>
-      </div>
+  <!-- ======================================================
+       MENU DINAMIK
+       Data datang daripada Google Sheet melalui Apps Script
+       ====================================================== -->
+  <section class="section menu-section" id="menu-section">
+    <div class="section-title">
+      <span class="number">1</span> Menu
     </div>
 
-    <div class="subtotal">
-      <span>Subtotal</span>
-      <strong id="subtotal">RM8.00</strong>
+    <div id="menuList" class="dynamic-list">
+      <div class="loading-card">Sedang memuatkan menu...</div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       ADD-ON DINAMIK
+       ====================================================== -->
+  <section class="section addon-section" id="addon-section">
+    <div class="section-title">
+      <span class="number">+</span> Add-On
     </div>
 
-    <!-- Nota Tambahan: diletakkan terus di bawah Subtotal PRODUCT CARD -->
+    <div id="addonList" class="dynamic-list">
+      <div class="loading-card">Sedang memuatkan add-on...</div>
+    </div>
+  </section>
+
+  <!-- NOTA TAMBAHAN -->
+  <section class="section note-section">
     <div class="additional-note">
       <label for="note">Nota Tambahan <span>(optional)</span></label>
       <textarea class="field" id="note" placeholder="Contoh: Letak di pagar, kurang pedas, dll."></textarea>
@@ -518,6 +664,94 @@ textarea.field {
   </section>
 
   <!-- ======================================================
+       SECTION 4 : MAKLUMAT ANDA
+       ====================================================== -->
+  <section class="section card-info" id="customer-section">
+    <div class="section-title"><span class="number">2</span> Maklumat Anda</div>
+
+    <div class="input-grid">
+      <div class="field-wrap">
+        <span class="field-icon">👤</span>
+        <input class="field with-icon" id="name" placeholder="Nama" autocomplete="name">
+      </div>
+
+      <div class="field-wrap">
+        <span class="field-icon whatsapp-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" role="img"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.4-1.7a11.8 11.8 0 0 0 5.6 1.4h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.1-1.2-6.1-3.4-8.3zM12 21.5h-.1c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 1 1 8.5 4.7zm5.3-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.6-.8-2.7-1.4-3.8-3.2-.3-.5.3-.5.8-1.6.1-.2.1-.4 0-.6-.1-.1-.6-1.5-.9-2.1-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.7.4-.2.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.1-.2-.3-.2-.6-.4z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/></svg></span>
+        <input class="field with-icon" id="phone" placeholder="No. WhatsApp" inputmode="tel" autocomplete="tel">
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       SECTION 5 : ALAMAT PENGHANTARAN
+       ====================================================== -->
+  <section class="section card-address" id="address-section">
+    <div class="section-title"><span class="number">3</span> Alamat Penghantaran</div>
+
+    <div class="input-grid">
+      <div class="field-wrap full">
+        <span class="field-icon">📍</span>
+        <textarea class="field with-icon" id="address" placeholder="Alamat Penuh" autocomplete="street-address"></textarea>
+      </div>
+
+      <div class="field-wrap full preorder-date-field">
+        <label for="deliveryDate" class="date-label">
+          <span class="date-label-icon" aria-hidden="true">📅</span>
+          <span>Tarikh Preorder</span>
+        </label>
+        <input
+          class="field"
+          id="deliveryDate"
+          type="date"
+          required
+          aria-label="Tarikh Preorder"
+          title="Pilih tarikh preorder yang tersedia."
+        >
+        <p id="dateInfo" class="date-info">Tempahan adalah PREORDER sahaja. Pilih tarikh penghantaran yang tersedia.</p>
+      </div>
+
+      <div class="field-wrap full">
+        <span class="field-icon">📌</span>
+        <select class="field with-icon area-select" id="area">
+          <option value="" disabled selected>Sedang memuatkan kawasan...</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       SECTION 6 : RINGKASAN PESANAN
+       ====================================================== -->
+  <section class="section card-summary" id="summary-section">
+    <div class="section-title"><span class="number">4</span> 🛒 Ringkasan Pesanan</div>
+
+    <div class="summary">
+      <div id="summaryItems">
+        <div class="summary-empty">Belum ada menu dipilih.</div>
+      </div>
+
+      <div class="summary-row delivery">
+        <span>Caj Delivery</span>
+        <strong id="deliveryFee">-</strong>
+      </div>
+
+      <div class="total">
+        <span class="total-label">Subtotal</span>
+        <span class="total-price" id="subtotalSummary">RM0.00</span>
+      </div>
+
+      <div class="total final-total">
+        <span class="total-label">TOTAL</span>
+        <span class="total-price" id="total">RM0.00</span>
+      </div>
+
+      <div class="note">
+        🛵 <b>Delivery sahaja.</b><br>
+        Caj delivery dikira mengikut kawasan penghantaran.
+      </div>
+    </div>
+  </section>
+<!-- ======================================================
        SECTION 1 : MAKLUMAT ANDA
        ====================================================== -->
   <section class="section card-info" id="customer-section">
@@ -573,43 +807,6 @@ textarea.field {
     </div>
   </section>
 
-  <!-- ======================================================
-       SECTION 3 : RINGKASAN PESANAN
-       ====================================================== -->
-  <section class="section card-summary" id="summary-section">
-    <div class="section-title"><span class="number">3</span> 🛒 Ringkasan Pesanan</div>
-
-    <div class="summary">
-      <!-- Details order -->
-      <div class="summary-row">
-        <span>Nasi Sumatera</span>
-        <span>× <b id="summaryQty">1</b></span>
-        <strong id="summaryProduct">RM8.00</strong>
-      </div>
-
-      <!-- Caj delivery dikira automatik berdasarkan kawasan -->
-      <div class="summary-row delivery">
-        <span>Caj Delivery</span>
-        <strong id="deliveryFee">-</strong>
-      </div>
-
-      <div class="total">
-        <span class="total-label">Subtotal</span>
-        <span class="total-price" id="subtotalSummary">RM8.00</span>
-      </div>
-
-      <div class="total final-total">
-        <span class="total-label">TOTAL</span>
-        <span class="total-price" id="total">RM8.00</span>
-      </div>
-
-      <div class="note">
-        🛵 <b>Delivery sahaja.</b><br>
-        Caj delivery dikira mengikut kawasan penghantaran.
-      </div>
-    </div>
-  </section>
-
   <div class="cta-wrap">
     <button class="cta" type="button" onclick="orderWhatsApp()">
       <span class="whatsapp" aria-hidden="true"><svg viewBox="0 0 24 24" role="img"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.4-1.7a11.8 11.8 0 0 0 5.6 1.4h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.1-1.2-6.1-3.4-8.3zM12 21.5h-.1c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 1 1 8.5 4.7zm5.3-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.6-.8-2.7-1.4-3.8-3.2-.3-.5.3-.5.8-1.6.1-.2.1-.4 0-.6-.1-.1-.6-1.5-.9-2.1-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.7.4-.2.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.1-.2-.3-.2-.6-.4z" fill="currentColor"/></svg></span>
@@ -638,20 +835,20 @@ textarea.field {
     </div>
   </div>
 
+
 </div>
 
+
 <script>
-const PRICE = 8;
-let qty = 1;
+const PRICE = 8; // Kekalkan untuk keserasian dengan sistem lama; pengiraan sebenar kini ikut menu Google Sheet.
+let qty = 0;
 let orderSubmitting = false;
 
-// =====================================================
-// BACKEND API
-// =====================================================
 const PREORDER_API_URL = "https://script.google.com/macros/s/AKfycbykmlfYBpR0OvzQHkozruAJ6z5z-31v7C_52bW1FIrLrOm3PYqNceALyYOmq3HlgEaZEw/exec";
 const BUSINESS_WHATSAPP = "601156859808";
 
 let preorderLoaded = false;
+
 let preorderData = {
   cutoffTime: "22:00",
   preorderEnabled: true,
@@ -663,9 +860,16 @@ let preorderData = {
   addon: []
 };
 
-// =====================================================
-// UTILITY
-// =====================================================
+/*
+  Cart disimpan berdasarkan ID item Google Sheet.
+  Contoh:
+  cart = {
+    "NB-NS": { item: {...}, qty: 2 },
+    "AO-TM": { item: {...}, qty: 1 }
+  }
+*/
+const cart = {};
+
 function money(value) {
   const number = Number(value) || 0;
   return "RM" + number.toFixed(2);
@@ -677,62 +881,194 @@ function formatDeliveryDate(value) {
   return `${day}/${month}/${year}`;
 }
 
-  function renderMenu() {
+function escapeHTML(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
+/* =====================================================
+   CART
+   ===================================================== */
+
+function getAllCartItems() {
+  return Object.values(cart).filter(entry => entry && entry.qty > 0);
+}
+
+function getCartItemCount() {
+  return getAllCartItems()
+    .reduce((sum, entry) => sum + entry.qty, 0);
+}
+
+function getCartSubtotal() {
+  return getAllCartItems()
+    .reduce((sum, entry) => {
+      return sum + (Number(entry.item.harga) || 0) * entry.qty;
+    }, 0);
+}
+
+function setItemQty(id, change) {
+  if (!id) return;
+
+  const sourceItem =
+    [...(preorderData.menu || []), ...(preorderData.addon || [])]
+      .find(item => item.id === id);
+
+  if (!sourceItem) return;
+
+  const current = cart[id]?.qty || 0;
+  const next = Math.max(0, current + Number(change || 0));
+
+  if (next === 0) {
+    delete cart[id];
+  } else {
+    cart[id] = {
+      item: sourceItem,
+      qty: next
+    };
+  }
+
+  renderMenu();
+  renderAddons();
+  updateTotal();
+}
+
+function getItemQty(id) {
+  return cart[id]?.qty || 0;
+}
+
+function renderQtyControl(item) {
+  const qty = getItemQty(item.id);
+
+  return `
+    <div class="qty dynamic-qty" aria-label="Kuantiti ${escapeHTML(item.nama)}">
+      <button type="button" onclick="setItemQty('${escapeHTML(item.id)}', -1)" aria-label="Kurangkan">−</button>
+      <div class="qty-value">${qty}</div>
+      <button type="button" onclick="setItemQty('${escapeHTML(item.id)}', 1)" aria-label="Tambah">+</button>
+    </div>
+  `;
+}
+
+/* =====================================================
+   MENU
+   ===================================================== */
+
+function renderMenu() {
   const menuList = document.getElementById("menuList");
-
   if (!menuList) return;
 
-  const menus = preorderData.menu || [];
+  const menus = Array.isArray(preorderData.menu)
+    ? preorderData.menu
+    : [];
 
   if (menus.length === 0) {
     menuList.innerHTML = `
-      <div style="text-align:center;padding:20px;color:#777;">
-        Tiada menu tersedia.
-      </div>
+      <div class="empty-card">Tiada menu tersedia.</div>
     `;
     return;
   }
 
   menuList.innerHTML = menus.map(item => {
+    const image = item.gambar
+      ? `<img class="dynamic-image" src="${escapeHTML(item.gambar)}" alt="${escapeHTML(item.nama)}">`
+      : "";
 
     return `
-      <div class="menu-item" style="
-        background:#fff;
-        border:1px solid #eee;
-        border-radius:18px;
-        padding:16px;
-        margin-bottom:12px;
-      ">
+      <div class="menu-card">
+        <div class="menu-card-main">
+          <div class="dynamic-content">
+            ${image}
+            <div class="dynamic-name">${escapeHTML(item.nama)}</div>
+            <div class="dynamic-description">${escapeHTML(item.penerangan || "")}</div>
+            <div class="dynamic-price">${money(item.harga)}<span>/bungkus</span></div>
+          </div>
 
-        <div style="font-weight:700;font-size:18px;">
-          ${item.nama}
+          ${renderQtyControl(item)}
         </div>
-
-        <div style="
-          font-size:14px;
-          color:#777;
-          margin-top:4px;
-        ">
-          ${item.penerangan || ""}
-        </div>
-
-        <div style="
-          font-weight:700;
-          font-size:18px;
-          margin-top:10px;
-        ">
-          RM ${Number(item.harga).toFixed(2)}
-        </div>
-
       </div>
     `;
-
   }).join("");
 }
-// =====================================================
-// DELIVERY AREA
-// =====================================================
+
+/* =====================================================
+   ADD-ON
+   ===================================================== */
+
+function renderAddons() {
+  const addonList = document.getElementById("addonList");
+  if (!addonList) return;
+
+  const addons = Array.isArray(preorderData.addon)
+    ? preorderData.addon
+    : [];
+
+  if (addons.length === 0) {
+    addonList.innerHTML = `
+      <div class="empty-card">Tiada add-on tersedia.</div>
+    `;
+    return;
+  }
+
+  addonList.innerHTML = addons.map(item => {
+    const image = item.gambar
+      ? `<img class="dynamic-image" src="${escapeHTML(item.gambar)}" alt="${escapeHTML(item.nama)}">`
+      : "";
+
+    return `
+      <div class="addon-card">
+        <div class="addon-card-main">
+          <div class="dynamic-content">
+            ${image}
+            <div class="dynamic-name">${escapeHTML(item.nama)}</div>
+            <div class="dynamic-description">${escapeHTML(item.penerangan || "")}</div>
+            <div class="dynamic-price">${money(item.harga)}</div>
+          </div>
+
+          ${renderQtyControl(item)}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* =====================================================
+   ORDER SUMMARY
+   ===================================================== */
+
+function renderSummary() {
+  const summaryItems = document.getElementById("summaryItems");
+  if (!summaryItems) return;
+
+  const items = getAllCartItems();
+
+  if (items.length === 0) {
+    summaryItems.innerHTML = `
+      <div class="summary-empty">Belum ada menu dipilih.</div>
+    `;
+    return;
+  }
+
+  summaryItems.innerHTML = items.map(entry => {
+    const itemTotal =
+      (Number(entry.item.harga) || 0) * entry.qty;
+
+    return `
+      <div class="summary-item">
+        <span class="summary-item-name">${escapeHTML(entry.item.nama)}</span>
+        <span class="summary-item-qty">× ${entry.qty}</span>
+        <strong class="summary-item-price">${money(itemTotal)}</strong>
+      </div>
+    `;
+  }).join("");
+}
+
+/* =====================================================
+   DELIVERY AREA
+   ===================================================== */
+
 function renderDeliveryAreas() {
   const areaSelect = document.getElementById("area");
 
@@ -766,6 +1102,7 @@ function renderDeliveryAreas() {
 
 function getSelectedDeliveryArea() {
   const areaSelect = document.getElementById("area");
+
   if (!areaSelect || !areaSelect.value) return null;
 
   const areas = Array.isArray(preorderData.deliveryAreas)
@@ -778,11 +1115,57 @@ function getSelectedDeliveryArea() {
   );
 }
 
-// =====================================================
-// PREORDER BACKEND
-// =====================================================
+/* =====================================================
+   TOTAL
+   ===================================================== */
+
+function updateTotal() {
+  const productTotal = getCartSubtotal();
+
+  const selectedArea = getSelectedDeliveryArea();
+
+  const delivery =
+    selectedArea
+      ? Number(selectedArea.charge) || 0
+      : 0;
+
+  const total = productTotal + delivery;
+
+  renderSummary();
+
+  const deliveryFee = document.getElementById("deliveryFee");
+  const subtotalSummary = document.getElementById("subtotalSummary");
+  const totalElement = document.getElementById("total");
+
+  if (deliveryFee) {
+    deliveryFee.textContent =
+      selectedArea ? money(delivery) : "-";
+  }
+
+  if (subtotalSummary) {
+    subtotalSummary.textContent =
+      money(productTotal);
+  }
+
+  if (totalElement) {
+    totalElement.textContent =
+      money(total);
+  }
+
+  return {
+    subtotal: productTotal,
+    delivery,
+    total
+  };
+}
+
+/* =====================================================
+   PREORDER BACKEND
+   ===================================================== */
+
 async function loadPreorderSettings() {
-  const dateInput = document.getElementById("deliveryDate");
+  const dateInput =
+    document.getElementById("deliveryDate");
 
   dateInput.disabled = true;
   dateInput.title = "Sedang menyemak sistem...";
@@ -796,16 +1179,21 @@ async function loadPreorderSettings() {
   }
 
   try {
-    const response = await fetch(PREORDER_API_URL + "?t=" + Date.now(), {
-      method: "GET",
-      cache: "no-store"
-    });
+    const response =
+      await fetch(
+        PREORDER_API_URL + "?t=" + Date.now(),
+        {
+          method: "GET",
+          cache: "no-store"
+        }
+      );
 
     if (!response.ok) {
       throw new Error("Gagal menghubungi backend.");
     }
 
-    const result = await response.json();
+    const result =
+      await response.json();
 
     if (!result.success || !result.data) {
       throw new Error(
@@ -823,19 +1211,40 @@ async function loadPreorderSettings() {
     renderDeliveryAreas();
     applyPreorderRules();
     renderMenu();
-    
+    renderAddons();
+    updateTotal();
+
   } catch (error) {
     console.error("Backend error:", error);
 
     preorderLoaded = false;
     dateInput.value = "";
     dateInput.disabled = true;
-    dateInput.title = "Sistem tidak dapat dihubungi.";
+    dateInput.title =
+      "Sistem tidak dapat dihubungi.";
 
-    const areaSelect = document.getElementById("area");
+    const areaSelect =
+      document.getElementById("area");
+
     if (areaSelect) {
       areaSelect.innerHTML =
         '<option value="" disabled selected>Gagal memuatkan kawasan</option>';
+    }
+
+    const menuList =
+      document.getElementById("menuList");
+
+    if (menuList) {
+      menuList.innerHTML =
+        '<div class="empty-card">Gagal memuatkan menu.</div>';
+    }
+
+    const addonList =
+      document.getElementById("addonList");
+
+    if (addonList) {
+      addonList.innerHTML =
+        '<div class="empty-card">Gagal memuatkan add-on.</div>';
     }
 
     alert(
@@ -851,7 +1260,8 @@ function applyPreorderRules() {
   if (!preorderData.preorderEnabled) {
     dateInput.value = "";
     dateInput.disabled = true;
-    dateInput.title = "Preorder sedang ditutup.";
+    dateInput.title =
+      "Preorder sedang ditutup.";
     return;
   }
 
@@ -897,7 +1307,8 @@ function validateDeliveryDate(showAlert = true) {
   const dateInput =
     document.getElementById("deliveryDate");
 
-  const selectedDate = dateInput.value;
+  const selectedDate =
+    dateInput.value;
 
   if (!preorderLoaded) {
     if (showAlert) {
@@ -914,6 +1325,7 @@ function validateDeliveryDate(showAlert = true) {
         "Maaf, preorder sedang ditutup buat masa ini."
       );
     }
+
     dateInput.value = "";
     return false;
   }
@@ -934,6 +1346,7 @@ function validateDeliveryDate(showAlert = true) {
         `Tarikh preorder paling awal ialah ${formatDeliveryDate(preorderData.firstAvailableDate)}.`
       );
     }
+
     dateInput.value = "";
     return false;
   }
@@ -944,6 +1357,7 @@ function validateDeliveryDate(showAlert = true) {
         `Maaf, tarikh ${formatDeliveryDate(selectedDate)} telah ditutup untuk preorder. Sila pilih tarikh lain.`
       );
     }
+
     dateInput.value = "";
     return false;
   }
@@ -951,100 +1365,94 @@ function validateDeliveryDate(showAlert = true) {
   return true;
 }
 
-// =====================================================
-// QUANTITY
-// =====================================================
-function changeQty(change) {
-  qty = Math.max(1, qty + change);
+/* =====================================================
+   SAVE ORDER -> GOOGLE APPS SCRIPT
+   ===================================================== */
 
-  document.getElementById("qty").textContent = qty;
-  document.getElementById("summaryQty").textContent = qty;
-
-  updateTotal();
-}
-
-// =====================================================
-// TOTAL
-// =====================================================
-function updateTotal() {
-  const productTotal = PRICE * qty;
-  const selectedArea = getSelectedDeliveryArea();
-  const delivery =
-    selectedArea ? Number(selectedArea.charge) || 0 : 0;
-  const total = productTotal + delivery;
-
-  document.getElementById("subtotal").textContent =
-    money(productTotal);
-
-  document.getElementById("summaryProduct").textContent =
-    money(productTotal);
-
-  document.getElementById("deliveryFee").textContent =
-    selectedArea ? money(delivery) : "-";
-
-  document.getElementById("subtotalSummary").textContent =
-    money(productTotal);
-
-  document.getElementById("total").textContent =
-    money(total);
-}
-
-// =====================================================
-// SAVE ORDER -> GOOGLE APPS SCRIPT
-// =====================================================
 async function saveOrderToBackend(orderData) {
   const body = new URLSearchParams();
 
-  Object.entries(orderData).forEach(([key, value]) => {
-    body.append(key, value == null ? "" : String(value));
-  });
+  Object.entries(orderData).forEach(
+    ([key, value]) => {
+      body.append(
+        key,
+        value == null ? "" : String(value)
+      );
+    }
+  );
 
-  const response = await fetch(PREORDER_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-    },
-    body: body.toString(),
-    cache: "no-store"
-  });
+  const response =
+    await fetch(
+      PREORDER_API_URL,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: body.toString(),
+        cache: "no-store"
+      }
+    );
 
   if (!response.ok) {
     throw new Error(
-      "Backend order gagal. HTTP " + response.status
+      "Backend order gagal. HTTP " +
+      response.status
     );
   }
 
-  const result = await response.json();
+  const result =
+    await response.json();
 
   if (!result.success || !result.data) {
     throw new Error(
-      result.error || "Order tidak berjaya disimpan."
+      result.error ||
+      "Order tidak berjaya disimpan."
     );
   }
 
   return result.data;
 }
 
-// =====================================================
-// ORDER VIA WHATSAPP
-// =====================================================
+/* =====================================================
+   BUILD ITEM ORDER
+   ===================================================== */
+
+function buildItemOrder() {
+  return getAllCartItems()
+    .map(entry => {
+      return `${entry.qty}x ${entry.item.nama}`;
+    })
+    .join(", ");
+}
+
+/* =====================================================
+   ORDER VIA WHATSAPP
+   ===================================================== */
+
 async function orderWhatsApp() {
   if (orderSubmitting) return;
 
   const name =
-    document.getElementById("name").value.trim();
+    document.getElementById("name")
+      .value.trim();
 
   const phone =
-    document.getElementById("phone").value.trim();
+    document.getElementById("phone")
+      .value.trim();
 
   const address =
-    document.getElementById("address").value.trim();
+    document.getElementById("address")
+      .value.trim();
 
   const note =
-    document.getElementById("note").value.trim();
+    document.getElementById("note")
+      .value.trim();
 
   const deliveryDate =
-    document.getElementById("deliveryDate").value;
+    document.getElementById("deliveryDate")
+      .value;
 
   const areaSelect =
     document.getElementById("area");
@@ -1053,27 +1461,31 @@ async function orderWhatsApp() {
     areaSelect.value;
 
   const areaText =
-    areaSelect.options[areaSelect.selectedIndex]
-      ? areaSelect.options[areaSelect.selectedIndex].text
+    areaSelect.options[
+      areaSelect.selectedIndex
+    ]
+      ? areaSelect.options[
+          areaSelect.selectedIndex
+        ].text
       : "";
 
   const selectedArea =
     getSelectedDeliveryArea();
 
-  const subtotal =
-    PRICE * qty;
+  const cartItems =
+    getAllCartItems();
 
-  const delivery =
-    selectedArea
-      ? Number(selectedArea.charge) || 0
-      : 0;
+  /* ---------------------------------------------
+     BASIC VALIDATION
+     --------------------------------------------- */
 
-  const total =
-    subtotal + delivery;
+  if (cartItems.length === 0) {
+    alert(
+      "Sila pilih sekurang-kurangnya satu menu."
+    );
+    return;
+  }
 
-  // ---------------------------------------------
-  // BASIC VALIDATION
-  // ---------------------------------------------
   if (
     !name ||
     !phone ||
@@ -1094,23 +1506,48 @@ async function orderWhatsApp() {
     return;
   }
 
-  // ---------------------------------------------
-  // PREORDER VALIDATION
-  // ---------------------------------------------
+  /* ---------------------------------------------
+     PREORDER VALIDATION
+     --------------------------------------------- */
+
   if (!validateDeliveryDate(true)) {
     return;
   }
 
-  // ---------------------------------------------
-  // LOCK BUTTON
-  // ---------------------------------------------
+  /* ---------------------------------------------
+     TOTAL
+     --------------------------------------------- */
+
+  const totals = updateTotal();
+
+  const subtotal =
+    totals.subtotal;
+
+  const delivery =
+    totals.delivery;
+
+  const total =
+    totals.total;
+
+  const itemOrder =
+    buildItemOrder();
+
+  const totalQty =
+    getCartItemCount();
+
+  /* ---------------------------------------------
+     LOCK BUTTON
+     --------------------------------------------- */
+
   orderSubmitting = true;
 
   const button =
     document.querySelector(".cta");
 
   const originalButtonHTML =
-    button ? button.innerHTML : "";
+    button
+      ? button.innerHTML
+      : "";
 
   if (button) {
     button.disabled = true;
@@ -1121,11 +1558,11 @@ async function orderWhatsApp() {
   }
 
   try {
-    // -------------------------------------------
-    // IMPORTANT:
-    // POST DULU KE GOOGLE APPS SCRIPT.
-    // WHATSAPP HANYA DIBUKA SELEPAS ORDER BERJAYA.
-    // -------------------------------------------
+    /* -------------------------------------------
+       POST DULU KE GOOGLE APPS SCRIPT.
+       WHATSAPP HANYA DIBUKA SELEPAS ORDER BERJAYA.
+       ------------------------------------------- */
+
     const savedOrder =
       await saveOrderToBackend({
         name: name,
@@ -1134,27 +1571,36 @@ async function orderWhatsApp() {
         area: area,
         note: note,
         deliveryDate: deliveryDate,
-        qty: qty,
+        qty: totalQty,
         subtotal: subtotal,
-        itemOrder:
-          `${qty}x Nasi Sumatera`
+        itemOrder: itemOrder
       });
 
     const orderId =
       savedOrder.orderId;
 
     const savedSubtotal =
-      Number(savedOrder.amount?.subtotal ?? subtotal);
+      Number(
+        savedOrder.amount?.subtotal ??
+        subtotal
+      );
 
     const savedDelivery =
-      Number(savedOrder.amount?.delivery ?? delivery);
+      Number(
+        savedOrder.amount?.delivery ??
+        delivery
+      );
 
     const savedTotal =
-      Number(savedOrder.amount?.total ?? total);
+      Number(
+        savedOrder.amount?.total ??
+        total
+      );
 
-    // -------------------------------------------
-    // WHATSAPP MESSAGE
-    // -------------------------------------------
+    /* -------------------------------------------
+       WHATSAPP MESSAGE
+       ------------------------------------------- */
+
     let message =
 `*ORDER NASI BUKUH*
 ---------------------------
@@ -1165,28 +1611,37 @@ async function orderWhatsApp() {
 *Kawasan:* ${areaText}
 *Lokasi:* ${address}
 
-*PESANAN:*
-- ${qty}x Nasi Sumatera
+*PESANAN:*`;
 
+    cartItems.forEach(entry => {
+      message +=
+`\n- ${entry.qty}x ${entry.item.nama} — ${money((Number(entry.item.harga) || 0) * entry.qty)}`;
+    });
+
+    message +=
+`\n
 *Subtotal:* ${money(savedSubtotal)}
 *Caj Delivery:* ${money(savedDelivery)}
 *JUMLAH:* ${money(savedTotal)}`;
 
     if (note) {
-      message += `
+      message +=
+`
 
 *Nota Tambahan:*
 ${note}`;
     }
 
-    message += `
+    message +=
+`
 
 ---------------------------
 _Bayaran akan dibuat secara online melalui WhatsApp._`;
 
-    // -------------------------------------------
-    // OPEN WHATSAPP ONLY AFTER SAVE SUCCESS
-    // -------------------------------------------
+    /* -------------------------------------------
+       OPEN WHATSAPP ONLY AFTER SAVE SUCCESS
+       ------------------------------------------- */
+
     window.location.href =
       "https://wa.me/" +
       BUSINESS_WHATSAPP +
@@ -1194,7 +1649,10 @@ _Bayaran akan dibuat secara online melalui WhatsApp._`;
       encodeURIComponent(message);
 
   } catch (error) {
-    console.error("SAVE ORDER ERROR:", error);
+    console.error(
+      "SAVE ORDER ERROR:",
+      error
+    );
 
     alert(
       "Order belum disimpan. WhatsApp tidak akan dibuka.\n\nSebab: " +
@@ -1208,14 +1666,16 @@ _Bayaran akan dibuat secara online melalui WhatsApp._`;
       button.disabled = false;
       button.style.opacity = "";
       button.style.cursor = "";
-      button.innerHTML = originalButtonHTML;
+      button.innerHTML =
+        originalButtonHTML;
     }
   }
 }
 
-// =====================================================
-// EVENTS
-// =====================================================
+/* =====================================================
+   EVENTS
+   ===================================================== */
+
 document
   .getElementById("deliveryDate")
   .addEventListener(
@@ -1230,11 +1690,13 @@ document
     updateTotal
   );
 
-// =====================================================
-// INITIALIZE
-// =====================================================
+/* =====================================================
+   INITIALIZE
+   ===================================================== */
+
 updateTotal();
 loadPreorderSettings();
 </script>
+
 </body>
 </html>
