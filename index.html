@@ -269,9 +269,13 @@ textarea.field {
 /* Tarikh preorder: guna paparan native input[type=date].
    Jangan letak placeholder/label terapung di atasnya kerana
    browser sudah menyediakan paparan dd/mm/yyyy sendiri. */
-#deliveryDate {
-  position:relative;
+.date-input-wrap { position:relative; }
+.date-placeholder {
+  position:absolute; left:15px; top:50%; transform:translateY(-50%);
+  color:#777; font-size:14px; pointer-events:none; z-index:1;
 }
+.date-input-wrap.has-value .date-placeholder { display:none; }
+#deliveryDate { position:relative; }
 
 .field.with-icon {
   padding-left:42px;
@@ -345,14 +349,7 @@ textarea.field {
   grid-template-columns:1fr auto;
 }
 
-.area-select {
-  border:1px solid #D9D9D9;
-  border-radius:10px;
-  background:#fff;
-  padding:7px 9px;
-  font-size:11px;
-  outline:none;
-}
+
 
 .total {
   margin-top:10px;
@@ -664,11 +661,15 @@ textarea.field {
   </section>
   
   
-    <div class="field-wrap full preorder-date-field">
-        <label for="deliveryDate" class="date-label">
-          <span class="date-label-icon" aria-hidden="true">📅</span>
-          <span>Tarikh Preorder</span>
-        </label>
+  <section class="section preorder-section">
+    <div class="section-title">
+      <span>📅</span>
+      <span>Tarikh Preorder</span>
+    </div>
+
+    <div class="preorder-date-field">
+      <div class="date-input-wrap">
+        <span class="date-placeholder">Pilih tarikh penghantaran</span>
         <input
           class="field"
           id="deliveryDate"
@@ -677,8 +678,10 @@ textarea.field {
           aria-label="Tarikh Preorder"
           title="Pilih tarikh preorder yang tersedia."
         >
-        <p id="dateInfo" class="date-info">Tempahan adalah PREORDER sahaja. Pilih tarikh penghantaran yang tersedia.</p>
       </div>
+      <p id="dateInfo" class="date-info">Tempahan adalah PREORDER sahaja. Pilih tarikh penghantaran yang tersedia.</p>
+    </div>
+  </section>
 
   <!-- NOTA TAMBAHAN -->
   <section class="section note-section">
@@ -1651,6 +1654,13 @@ document
     "change",
     () => validateDeliveryDate(true)
   );
+
+const dateInputWrap = document.querySelector(".date-input-wrap");
+const updateDatePlaceholder = () => {
+  dateInputWrap.classList.toggle("has-value", !!document.getElementById("deliveryDate").value);
+};
+document.getElementById("deliveryDate").addEventListener("input", updateDatePlaceholder);
+updateDatePlaceholder();
 
 document
   .getElementById("area")
