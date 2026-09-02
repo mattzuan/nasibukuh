@@ -676,6 +676,59 @@ function formatDeliveryDate(value) {
   return `${day}/${month}/${year}`;
 }
 
+  function renderMenu() {
+
+  const menuList = document.getElementById("menuList");
+
+  if (!menuList) return;
+
+  const menus = preorderData.menu || [];
+
+  if (menus.length === 0) {
+    menuList.innerHTML = `
+      <div style="text-align:center;padding:20px;color:#777;">
+        Tiada menu tersedia.
+      </div>
+    `;
+    return;
+  }
+
+  menuList.innerHTML = menus.map(item => {
+
+    return `
+      <div class="menu-item" style="
+        background:#fff;
+        border:1px solid #eee;
+        border-radius:18px;
+        padding:16px;
+        margin-bottom:12px;
+      ">
+
+        <div style="font-weight:700;font-size:18px;">
+          ${item.nama}
+        </div>
+
+        <div style="
+          font-size:14px;
+          color:#777;
+          margin-top:4px;
+        ">
+          ${item.penerangan || ""}
+        </div>
+
+        <div style="
+          font-weight:700;
+          font-size:18px;
+          margin-top:10px;
+        ">
+          RM ${Number(item.harga).toFixed(2)}
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
 // =====================================================
 // DELIVERY AREA
 // =====================================================
