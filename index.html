@@ -903,39 +903,82 @@ function renderQtyControl(item) {
    ===================================================== */
 
 function renderMenu() {
+
   const menuList = document.getElementById("menuList");
+
   if (!menuList) return;
 
-  const menus = Array.isArray(preorderData.menu)
-    ? preorderData.menu
-    : [];
+  const menus = preorderData.menu || [];
 
   if (menus.length === 0) {
     menuList.innerHTML = `
-      <div class="empty-card">Tiada menu tersedia.</div>
+      <div style="text-align:center;padding:20px;color:#777;">
+        Tiada menu tersedia.
+      </div>
     `;
     return;
   }
 
   menuList.innerHTML = menus.map(item => {
-    const image = item.gambar
-      ? `<img class="dynamic-image" src="${escapeHTML(item.gambar)}" alt="${escapeHTML(item.nama)}">`
+
+    const imageHTML = item.gambar
+      ? `
+        <img
+          src="${item.gambar}"
+          alt="${item.nama}"
+          style="
+            width:90px;
+            height:90px;
+            object-fit:cover;
+            border-radius:14px;
+            flex-shrink:0;
+          "
+          onerror="this.style.display='none'"
+        >
+      `
       : "";
 
     return `
       <div class="menu-card">
+
         <div class="menu-card-main">
-          <div class="dynamic-content">
-            ${image}
-            <div class="dynamic-name">${escapeHTML(item.nama)}</div>
-            <div class="dynamic-description">${escapeHTML(item.penerangan || "")}</div>
-            <div class="dynamic-price">${money(item.harga)}<span>/bungkus</span></div>
+
+          <div style="min-width:0;">
+
+            <div style="
+              font-weight:700;
+              font-size:16px;
+              line-height:1.25;
+            ">
+              ${item.nama}
+            </div>
+
+            <div style="
+              font-size:12px;
+              color:#777;
+              margin-top:4px;
+              line-height:1.4;
+            ">
+              ${item.penerangan || ""}
+            </div>
+
+            <div style="
+              font-weight:700;
+              font-size:15px;
+              margin-top:7px;
+            ">
+              RM ${Number(item.harga).toFixed(2)}
+            </div>
+
           </div>
 
-          ${renderQtyControl(item)}
+          ${imageHTML}
+
         </div>
+
       </div>
     `;
+
   }).join("");
 }
 
