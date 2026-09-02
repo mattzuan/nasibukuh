@@ -920,22 +920,13 @@ function renderMenu() {
 
   menuList.innerHTML = menus.map(item => {
 
-    const imageHTML = item.gambar
-      ? `
-        <img
-          src="${item.gambar}"
-          alt="${item.nama}"
-          style="
-            width:90px;
-            height:90px;
-            object-fit:cover;
-            border-radius:14px;
-            flex-shrink:0;
-          "
-          onerror="this.style.display='none'"
-        >
-      `
-      : "";
+    if (typeof window.menuQty === "undefined") {
+      window.menuQty = {};
+    }
+
+    if (window.menuQty[item.id] == null) {
+      window.menuQty[item.id] = 0;
+    }
 
     return `
       <div class="menu-card">
@@ -946,32 +937,79 @@ function renderMenu() {
 
             <div style="
               font-weight:700;
-              font-size:16px;
+              font-size:15px;
               line-height:1.25;
             ">
               ${item.nama}
             </div>
 
             <div style="
-              font-size:12px;
+              font-size:11px;
               color:#777;
               margin-top:4px;
-              line-height:1.4;
             ">
               ${item.penerangan || ""}
             </div>
 
             <div style="
               font-weight:700;
-              font-size:15px;
-              margin-top:7px;
+              font-size:14px;
+              margin-top:6px;
             ">
               RM ${Number(item.harga).toFixed(2)}
             </div>
 
           </div>
 
-          ${imageHTML}
+          <div style="
+            display:flex;
+            align-items:center;
+            border:2px solid #f5b800;
+            border-radius:10px;
+            overflow:hidden;
+            background:#fff;
+            flex-shrink:0;
+          ">
+
+            <button
+              type="button"
+              onclick="changeMenuQty('${item.id}', -1)"
+              style="
+                width:32px;
+                height:32px;
+                border:0;
+                background:#fff;
+                font-size:18px;
+                font-weight:700;
+                cursor:pointer;
+              "
+            >−</button>
+
+            <span
+              id="menu-qty-${item.id}"
+              style="
+                min-width:24px;
+                text-align:center;
+                font-size:14px;
+                font-weight:700;
+              "
+            >${window.menuQty[item.id]}</span>
+
+            <button
+              type="button"
+              onclick="changeMenuQty('${item.id}', 1)"
+              style="
+                width:32px;
+                height:32px;
+                border:0;
+                background:#fff;
+                font-size:18px;
+                font-weight:700;
+                cursor:pointer;
+              "
+            >+</button>
+
+          </div>
 
         </div>
 
@@ -981,6 +1019,34 @@ function renderMenu() {
   }).join("");
 }
 
+  function changeMenuQty(id, change) {
+
+  if (typeof window.menuQty === "undefined") {
+    window.menuQty = {};
+  }
+
+  if (window.menuQty[id] == null) {
+    window.menuQty[id] = 0;
+  }
+
+  window.menuQty[id] = Math.max(
+    0,
+    window.menuQty[id] + change
+  );
+
+  const qtyElement =
+    document.getElementById("menu-qty-" + id);
+
+  if (qtyElement) {
+    qtyElement.textContent = window.menuQty[id];
+  }
+
+  // Jumlah semua menu
+  qty = Object.values(window.menuQty)
+    .reduce((sum, value) => sum + Number(value || 0), 0);
+
+  updateTotal();
+}
 /* =====================================================
    ADD-ON
    ===================================================== */
