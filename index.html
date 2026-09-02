@@ -563,12 +563,8 @@ textarea.field {
 
       <div class="field-wrap full">
         <span class="field-icon">📌</span>
-        <select class="field with-icon area-select" id="area" onchange="updateTotal()">
-          <option value="" disabled selected>Pilih Kawasan</option>
-          <option value="5">Kuala Selangor</option>
-          <option value="5">Tanjung Karang</option>
-          <option value="7">Bestari Jaya</option>
-          <option value="7">Ijok</option>
+        <select class="field with-icon area-select" id="area">
+          <option value="" disabled selected>Sedang memuatkan kawasan...</option>
         </select>
       </div>
     </div>
@@ -644,12 +640,13 @@ textarea.field {
 <script>
 const PRICE = 8;
 let qty = 1;
+let orderSubmitting = false;
 
 // =====================================================
-// BACKEND PREORDER
+// BACKEND API
 // =====================================================
-// PASTE URL WEB APP APPS SCRIPT KAU DI BAWAH
 const PREORDER_API_URL = "https://script.google.com/macros/s/AKfycbykmlfYBpR0OvzQHkozruAJ6z5z-31v7C_52bW1FIrLrOm3PYqNceALyYOmq3HlgEaZEw/exec";
+const BUSINESS_WHATSAPP = "601156859808";
 
 let preorderLoaded = false;
 let preorderData = {
@@ -657,123 +654,157 @@ let preorderData = {
   preorderEnabled: true,
   firstAvailableDate: "",
   closedDates: [],
-  openDates: []
+  openDates: [],
+  deliveryAreas: []
 };
-
 
 // =====================================================
 // UTILITY
 // =====================================================
-
 function money(value) {
-  return "RM" + value.toFixed(2);
-}
-
-function getTodayString() {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, "0");
-  const dd = String(today.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+  const number = Number(value) || 0;
+  return "RM" + number.toFixed(2);
 }
 
 function formatDeliveryDate(value) {
+  if (!value) return "";
   const [year, month, day] = value.split("-");
   return `${day}/${month}/${year}`;
 }
 
+// =====================================================
+// DELIVERY AREA
+// =====================================================
+function renderDeliveryAreas() {
+  const areaSelect = document.getElementById("area");
+
+  if (!areaSelect) return;
+
+  const currentValue = areaSelect.value;
+
+  areaSelect.innerHTML =
+    '<option value="" disabled selected>Pilih Kawasan</option>';
+
+  const areas = Array.isArray(preorderData.deliveryAreas)
+    ? preorderData.deliveryAreas
+    : [];
+
+  areas.forEach(area => {
+    const option = document.createElement("option");
+    option.value = area.name;
+    option.textContent = area.name;
+    areaSelect.appendChild(option);
+  });
+
+  if (
+    currentValue &&
+    areas.some(area => area.name === currentValue)
+  ) {
+    areaSelect.value = currentValue;
+  }
+
+  updateTotal();
+}
+
+function getSelectedDeliveryArea() {
+  const areaSelect = document.getElementById("area");
+  if (!areaSelect || !areaSelect.value) return null;
+
+  const areas = Array.isArray(preorderData.deliveryAreas)
+    ? preorderData.deliveryAreas
+    : [];
+
+  return (
+    areas.find(area => area.name === areaSelect.value) ||
+    null
+  );
+}
 
 // =====================================================
 // PREORDER BACKEND
 // =====================================================
-
 async function loadPreorderSettings() {
-
   const dateInput = document.getElementById("deliveryDate");
 
-  // Sementara backend sedang dibaca
   dateInput.disabled = true;
-  dateInput.title = "Sedang menyemak tarikh preorder...";
+  dateInput.title = "Sedang menyemak sistem...";
 
   if (
     !PREORDER_API_URL ||
     PREORDER_API_URL === "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE"
   ) {
-    console.warn("PREORDER_API_URL belum diisi.");
-    preorderLoaded = false;
-    dateInput.disabled = false;
-    dateInput.title = "Sila pilih tarikh preorder";
+    console.error("PREORDER_API_URL belum diisi.");
     return;
   }
 
   try {
-
-    const response = await fetch(PREORDER_API_URL, {
+    const response = await fetch(PREORDER_API_URL + "?t=" + Date.now(), {
       method: "GET",
       cache: "no-store"
     });
 
     if (!response.ok) {
-      throw new Error("Gagal menghubungi backend preorder.");
+      throw new Error("Gagal menghubungi backend.");
     }
 
     const result = await response.json();
 
     if (!result.success || !result.data) {
       throw new Error(
-        result.error || "Data preorder tidak sah."
+        result.error || "Data backend tidak sah."
       );
     }
 
-    preorderData = result.data;
+    preorderData = {
+      ...preorderData,
+      ...result.data
+    };
 
     preorderLoaded = true;
 
+    renderDeliveryAreas();
     applyPreorderRules();
 
   } catch (error) {
-
-    console.error("Preorder API error:", error);
+    console.error("Backend error:", error);
 
     preorderLoaded = false;
-
     dateInput.value = "";
     dateInput.disabled = true;
-    dateInput.title = "Sistem preorder tidak dapat dihubungi.";
+    dateInput.title = "Sistem tidak dapat dihubungi.";
+
+    const areaSelect = document.getElementById("area");
+    if (areaSelect) {
+      areaSelect.innerHTML =
+        '<option value="" disabled selected>Gagal memuatkan kawasan</option>';
+    }
 
     alert(
-      "Maaf, sistem preorder sedang tidak dapat dihubungi. Sila refresh halaman dan cuba lagi."
+      "Maaf, sistem tempahan tidak dapat dihubungi. Sila refresh halaman dan cuba lagi."
     );
   }
 }
 
-
 function applyPreorderRules() {
-
   const dateInput =
     document.getElementById("deliveryDate");
 
   if (!preorderData.preorderEnabled) {
-
     dateInput.value = "";
     dateInput.disabled = true;
     dateInput.title = "Preorder sedang ditutup.";
-
     return;
   }
 
   dateInput.disabled = false;
-
   dateInput.title =
     "Pilih tarikh preorder yang tersedia.";
 
-  // Tarikh paling awal datang daripada backend.
   if (preorderData.firstAvailableDate) {
-    dateInput.min = preorderData.firstAvailableDate;
+    dateInput.min =
+      preorderData.firstAvailableDate;
   }
 
-  // Jika tarikh yang sedang dipilih sudah locked,
-  // kosongkan.
   if (
     dateInput.value &&
     isDateLocked(dateInput.value)
@@ -782,95 +813,78 @@ function applyPreorderRules() {
   }
 }
 
-
 function isDateLocked(dateValue) {
-
   if (!dateValue) return true;
 
-  // CLOSED dari Google Sheet
-  if (
-    Array.isArray(preorderData.closedDates) &&
-    preorderData.closedDates.includes(dateValue)
-  ) {
-    return true;
-  }
+  const openDates =
+    Array.isArray(preorderData.openDates)
+      ? preorderData.openDates
+      : [];
 
-  // Kalau ada OPEN override, ia dibenarkan
-  // walaupun tarikh tersebut berada dalam senarai CLOSED.
-  if (
-    Array.isArray(preorderData.openDates) &&
-    preorderData.openDates.includes(dateValue)
-  ) {
+  const closedDates =
+    Array.isArray(preorderData.closedDates)
+      ? preorderData.closedDates
+      : [];
+
+  // OPEN override CLOSED
+  if (openDates.includes(dateValue)) {
     return false;
   }
 
-  return false;
+  return closedDates.includes(dateValue);
 }
 
-
 function validateDeliveryDate(showAlert = true) {
-
   const dateInput =
     document.getElementById("deliveryDate");
 
   const selectedDate = dateInput.value;
 
   if (!preorderLoaded) {
-
     if (showAlert) {
       alert(
         "Sistem preorder belum selesai disemak. Sila tunggu sebentar atau refresh halaman."
       );
     }
-
     return false;
   }
 
   if (!preorderData.preorderEnabled) {
-
     if (showAlert) {
       alert(
         "Maaf, preorder sedang ditutup buat masa ini."
       );
     }
-
     dateInput.value = "";
     return false;
   }
 
   if (!selectedDate) {
+    if (showAlert) {
+      alert("Sila pilih tarikh preorder.");
+    }
     return false;
   }
 
-  // Jangan benarkan tarikh sebelum tarikh minimum
-  // yang ditentukan backend.
   if (
     preorderData.firstAvailableDate &&
     selectedDate < preorderData.firstAvailableDate
   ) {
-
     if (showAlert) {
-
       alert(
         `Tarikh preorder paling awal ialah ${formatDeliveryDate(preorderData.firstAvailableDate)}.`
       );
-
     }
-
     dateInput.value = "";
     return false;
   }
 
   if (isDateLocked(selectedDate)) {
-
     if (showAlert) {
-
       alert(
         `Maaf, tarikh ${formatDeliveryDate(selectedDate)} telah ditutup untuk preorder. Sila pilih tarikh lain.`
       );
-
     }
-
     dateInput.value = "";
     return false;
   }
@@ -878,13 +892,10 @@ function validateDeliveryDate(showAlert = true) {
   return true;
 }
 
-
 // =====================================================
 // QUANTITY
 // =====================================================
-
 function changeQty(change) {
-
   qty = Math.max(1, qty + change);
 
   document.getElementById("qty").textContent = qty;
@@ -893,23 +904,15 @@ function changeQty(change) {
   updateTotal();
 }
 
-
 // =====================================================
 // TOTAL
 // =====================================================
-
 function updateTotal() {
-
   const productTotal = PRICE * qty;
-
-  const areaValue =
-    document.getElementById("area").value;
-
+  const selectedArea = getSelectedDeliveryArea();
   const delivery =
-    areaValue === "" ? 0 : Number(areaValue);
-
-  const total =
-    productTotal + delivery;
+    selectedArea ? Number(selectedArea.charge) || 0 : 0;
+  const total = productTotal + delivery;
 
   document.getElementById("subtotal").textContent =
     money(productTotal);
@@ -918,9 +921,7 @@ function updateTotal() {
     money(productTotal);
 
   document.getElementById("deliveryFee").textContent =
-    areaValue === ""
-      ? "-"
-      : money(delivery);
+    selectedArea ? money(delivery) : "-";
 
   document.getElementById("subtotalSummary").textContent =
     money(productTotal);
@@ -929,12 +930,47 @@ function updateTotal() {
     money(total);
 }
 
+// =====================================================
+// SAVE ORDER -> GOOGLE APPS SCRIPT
+// =====================================================
+async function saveOrderToBackend(orderData) {
+  const body = new URLSearchParams();
+
+  Object.entries(orderData).forEach(([key, value]) => {
+    body.append(key, value == null ? "" : String(value));
+  });
+
+  const response = await fetch(PREORDER_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+    },
+    body: body.toString(),
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      "Backend order gagal. HTTP " + response.status
+    );
+  }
+
+  const result = await response.json();
+
+  if (!result.success || !result.data) {
+    throw new Error(
+      result.error || "Order tidak berjaya disimpan."
+    );
+  }
+
+  return result.data;
+}
 
 // =====================================================
 // ORDER VIA WHATSAPP
 // =====================================================
-
-function orderWhatsApp() {
+async function orderWhatsApp() {
+  if (orderSubmitting) return;
 
   const name =
     document.getElementById("name").value.trim();
@@ -951,70 +987,116 @@ function orderWhatsApp() {
   const deliveryDate =
     document.getElementById("deliveryDate").value;
 
-  const area =
+  const areaSelect =
     document.getElementById("area");
 
-  const areaText =
-    area.options[area.selectedIndex].text;
+  const area =
+    areaSelect.value;
 
-  const delivery =
-    area.value === ""
-      ? 0
-      : Number(area.value);
+  const areaText =
+    areaSelect.options[areaSelect.selectedIndex]
+      ? areaSelect.options[areaSelect.selectedIndex].text
+      : "";
+
+  const selectedArea =
+    getSelectedDeliveryArea();
 
   const subtotal =
     PRICE * qty;
 
+  const delivery =
+    selectedArea
+      ? Number(selectedArea.charge) || 0
+      : 0;
+
   const total =
     subtotal + delivery;
-
 
   // ---------------------------------------------
   // BASIC VALIDATION
   // ---------------------------------------------
-
   if (
     !name ||
     !phone ||
     !address ||
     !deliveryDate ||
-    !area.value
+    !area
   ) {
-
     alert(
       "Sila isi Nama, No. WhatsApp, Tarikh untuk Preorder, Alamat penghantaran dan pilih Kawasan."
     );
-
     return;
   }
 
+  if (!selectedArea) {
+    alert(
+      "Kawasan penghantaran tidak tersedia. Sila refresh halaman."
+    );
+    return;
+  }
 
   // ---------------------------------------------
   // PREORDER VALIDATION
   // ---------------------------------------------
-
   if (!validateDeliveryDate(true)) {
     return;
   }
 
-
-  // Nombor WhatsApp bisnes
-  const businessNumber = "601156859808";
-
-
   // ---------------------------------------------
-  // ORDER ID
+  // LOCK BUTTON
   // ---------------------------------------------
+  orderSubmitting = true;
 
-  const orderId =
-    `NB-${Math.floor(100000 + Math.random() * 900000)}`;
+  const button =
+    document.querySelector(".cta");
 
+  const originalButtonHTML =
+    button ? button.innerHTML : "";
 
-  // ---------------------------------------------
-  // WHATSAPP MESSAGE
-  // ---------------------------------------------
+  if (button) {
+    button.disabled = true;
+    button.style.opacity = "0.7";
+    button.style.cursor = "wait";
+    button.innerHTML =
+      "<span style='font-weight:800'>MENYIMPAN ORDER...</span>";
+  }
 
-  let message =
+  try {
+    // -------------------------------------------
+    // IMPORTANT:
+    // POST DULU KE GOOGLE APPS SCRIPT.
+    // WHATSAPP HANYA DIBUKA SELEPAS ORDER BERJAYA.
+    // -------------------------------------------
+    const savedOrder =
+      await saveOrderToBackend({
+        name: name,
+        phone: phone,
+        address: address,
+        area: area,
+        note: note,
+        deliveryDate: deliveryDate,
+        qty: qty,
+        subtotal: subtotal,
+        itemOrder:
+          `${qty}x Nasi Bukuh Ayam Cincang`
+      });
+
+    const orderId =
+      savedOrder.orderId;
+
+    const savedSubtotal =
+      Number(savedOrder.amount?.subtotal ?? subtotal);
+
+    const savedDelivery =
+      Number(savedOrder.amount?.delivery ?? delivery);
+
+    const savedTotal =
+      Number(savedOrder.amount?.total ?? total);
+
+    // -------------------------------------------
+    // WHATSAPP MESSAGE
+    // -------------------------------------------
+    let message =
 `*ORDER NASI BUKUH*
 ---------------------------
 *Order ID:* ${orderId}
@@ -1027,43 +1109,54 @@ function orderWhatsApp() {
 *PESANAN:*
 - ${qty}x Nasi Bukuh Ayam Cincang
 
-*Subtotal:* ${money(subtotal)}
-*Caj Delivery:* ${money(delivery)}
-*JUMLAH:* ${money(total)}`;
+*Subtotal:* ${money(savedSubtotal)}
+*Caj Delivery:* ${money(savedDelivery)}
+*JUMLAH:* ${money(savedTotal)}`;
 
-
-  if (note) {
-
-    message += `
+    if (note) {
+      message += `
 
 *Nota Tambahan:*
 ${note}`;
+    }
 
-  }
-
-
-  message += `
+    message += `
 
 ---------------------------
 _Bayaran akan dibuat secara online melalui WhatsApp._`;
 
+    // -------------------------------------------
+    // OPEN WHATSAPP ONLY AFTER SAVE SUCCESS
+    // -------------------------------------------
+    window.location.href =
+      "https://wa.me/" +
+      BUSINESS_WHATSAPP +
+      "?text=" +
+      encodeURIComponent(message);
 
-  // ---------------------------------------------
-  // OPEN WHATSAPP
-  // ---------------------------------------------
+  } catch (error) {
+    console.error("SAVE ORDER ERROR:", error);
 
-  window.location.href =
-    "https://wa.me/" +
-    businessNumber +
-    "?text=" +
-    encodeURIComponent(message);
+    alert(
+      "Order belum disimpan. WhatsApp tidak akan dibuka.\n\nSebab: " +
+      error.message
+    );
+
+  } finally {
+    orderSubmitting = false;
+
+    if (button) {
+      button.disabled = false;
+      button.style.opacity = "";
+      button.style.cursor = "";
+      button.innerHTML = originalButtonHTML;
+    }
+  }
 }
 
-
 // =====================================================
-// EVENT
+// EVENTS
 // =====================================================
-
 document
   .getElementById("deliveryDate")
   .addEventListener(
@@ -1071,13 +1164,17 @@ document
     () => validateDeliveryDate(true)
   );
 
+document
+  .getElementById("area")
+  .addEventListener(
+    "change",
+    updateTotal
+  );
 
 // =====================================================
 // INITIALIZE
 // =====================================================
-
 updateTotal();
-
 loadPreorderSettings();
 </script>
 </body>
