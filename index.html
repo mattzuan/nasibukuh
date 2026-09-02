@@ -492,78 +492,9 @@ textarea.field {
 .addon-card {
   background:#fff;
   border:1px solid var(--line);
-  border-radius:16px;
-  padding:11px 12px;
+  border-radius:3px;
+  padding:8px 8px;
 }
-
-
-/* =====================================================
-   SECTION: QUANTITY CONTROL - COMPACT
-   ===================================================== */
-
-.qty-control {
-  display: inline-flex !important;
-  width: 108px !important;
-  max-width: 108px !important;
-  height: 40px !important;
-
-  align-items: center;
-  justify-content: space-between;
-
-  background: #fff;
-  border: 2px solid #e8b900;
-  border-radius: 12px;
-
-  padding: 0 4px !important;
-  margin-top: 10px;
-
-  box-sizing: border-box;
-  flex-shrink: 0;
-}
-
-.qty-control button {
-  width: 32px !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
-  height: 32px !important;
-
-  padding: 0 !important;
-  margin: 0 !important;
-
-  border: 0 !important;
-  background: transparent !important;
-
-  font-size: 20px;
-  font-weight: 800;
-  color: #111;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.qty-control .qty-value {
-  width: 30px !important;
-  min-width: 30px !important;
-
-  text-align: center;
-  font-size: 16px;
-  font-weight: 800;
-}
-
-/* =====================================================
-   SECTION: QUANTITY CONTROL - MOBILE
-   ===================================================== */
-
-@media (max-width:560px) {
-
-  .qty-control {
-    width: 108px !important;
-    max-width: 108px !important;
-    height: 40px !important;
-  }
-
-}  
 
 .menu-card-main,
 .addon-card-main {
@@ -738,7 +669,7 @@ textarea.field {
        SECTION 6 : RINGKASAN PESANAN
        ====================================================== -->
   <section class="section card-summary" id="summary-section">
-    <div class="section-title"><span class="number">2</span> 🛒 Ringkasan Pesanan</div>
+    <div class="section-title"><span class="number">3</span> 🛒 Ringkasan Pesanan</div>
 
     <div class="summary">
       <div id="summaryItems">
@@ -968,154 +899,46 @@ function renderQtyControl(item) {
 }
 
 /* =====================================================
-   MENU + QUANTITY
+   MENU
    ===================================================== */
+
 function renderMenu() {
-
   const menuList = document.getElementById("menuList");
-
   if (!menuList) return;
 
-  const menus = preorderData.menu || [];
+  const menus = Array.isArray(preorderData.menu)
+    ? preorderData.menu
+    : [];
 
   if (menus.length === 0) {
     menuList.innerHTML = `
-      <div style="text-align:center;padding:20px;color:#777;">
-        Tiada menu tersedia.
-      </div>
+      <div class="empty-card">Tiada menu tersedia.</div>
     `;
     return;
   }
 
   menuList.innerHTML = menus.map(item => {
-
-    if (typeof window.menuQty === "undefined") {
-      window.menuQty = {};
-    }
-
-    if (window.menuQty[item.id] == null) {
-      window.menuQty[item.id] = 0;
-    }
+    const image = item.gambar
+      ? `<img class="dynamic-image" src="${escapeHTML(item.gambar)}" alt="${escapeHTML(item.nama)}">`
+      : "";
 
     return `
       <div class="menu-card">
-
         <div class="menu-card-main">
-
-          <div style="min-width:0;">
-
-            <div style="
-              font-weight:700;
-              font-size:15px;
-              line-height:1.25;
-            ">
-              ${item.nama}
-            </div>
-
-            <div style="
-              font-size:11px;
-              color:#777;
-              margin-top:4px;
-            ">
-              ${item.penerangan || ""}
-            </div>
-
-            <div style="
-              font-weight:700;
-              font-size:14px;
-              margin-top:6px;
-            ">
-              RM ${Number(item.harga).toFixed(2)}
-            </div>
-
+          <div class="dynamic-content">
+            ${image}
+            <div class="dynamic-name">${escapeHTML(item.nama)}</div>
+            <div class="dynamic-description">${escapeHTML(item.penerangan || "")}</div>
+            <div class="dynamic-price">${money(item.harga)}<span>/bungkus</span></div>
           </div>
 
-          <div style="
-            display:flex;
-            align-items:center;
-            border:2px solid #f5b800;
-            border-radius:10px;
-            overflow:hidden;
-            background:#fff;
-            flex-shrink:0;
-          ">
-
-            <button
-              type="button"
-              onclick="changeMenuQty('${item.id}', -1)"
-              style="
-                width:32px;
-                height:32px;
-                border:0;
-                background:#fff;
-                font-size:18px;
-                font-weight:700;
-                cursor:pointer;
-              "
-            >−</button>
-
-            <span
-              id="menu-qty-${item.id}"
-              style="
-                min-width:24px;
-                text-align:center;
-                font-size:14px;
-                font-weight:700;
-              "
-            >${window.menuQty[item.id]}</span>
-
-            <button
-              type="button"
-              onclick="changeMenuQty('${item.id}', 1)"
-              style="
-                width:32px;
-                height:32px;
-                border:0;
-                background:#fff;
-                font-size:18px;
-                font-weight:700;
-                cursor:pointer;
-              "
-            >+</button>
-
-          </div>
-
+          ${renderQtyControl(item)}
         </div>
-
       </div>
     `;
-
   }).join("");
 }
 
-  function changeMenuQty(id, change) {
-
-  if (typeof window.menuQty === "undefined") {
-    window.menuQty = {};
-  }
-
-  if (window.menuQty[id] == null) {
-    window.menuQty[id] = 0;
-  }
-
-  window.menuQty[id] = Math.max(
-    0,
-    window.menuQty[id] + change
-  );
-
-  const qtyElement =
-    document.getElementById("menu-qty-" + id);
-
-  if (qtyElement) {
-    qtyElement.textContent = window.menuQty[id];
-  }
-
-  // Jumlah semua menu
-  qty = Object.values(window.menuQty)
-    .reduce((sum, value) => sum + Number(value || 0), 0);
-
-  updateTotal();
-}
 /* =====================================================
    ADD-ON
    ===================================================== */
