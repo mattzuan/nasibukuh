@@ -445,79 +445,6 @@ textarea.field {
   font-size:11px;
 }
 
-
-/* =====================================================
-   ORDER MODE
-   ===================================================== */
-.order-mode-wrap {
-  padding:18px 22px 4px;
-  background:#fff;
-}
-.order-mode-card {
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:16px;
-  background:#fff;
-  box-shadow:0 6px 20px rgba(0,0,0,.05);
-}
-.order-mode-title {
-  font-size:14px;
-  font-weight:800;
-  margin-bottom:11px;
-}
-.order-mode-buttons {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.order-mode-btn {
-  border:1.5px solid #dedede;
-  background:#fff;
-  border-radius:15px;
-  padding:13px 10px;
-  cursor:pointer;
-  font-weight:800;
-  font-size:13px;
-  transition:.2s;
-}
-.order-mode-btn.active {
-  border-color:var(--black);
-  background:var(--black);
-  color:#fff;
-}
-.order-mode-btn.group.active {
-  background:var(--yellow);
-  color:var(--black);
-  border-color:var(--yellow);
-}
-.order-mode-status {
-  margin-top:10px;
-  font-size:11px;
-  line-height:1.45;
-  color:var(--muted);
-}
-.group-info {
-  display:none;
-  margin-top:10px;
-  padding:11px 12px;
-  border-radius:14px;
-  background:var(--yellow-soft);
-  font-size:11px;
-  line-height:1.45;
-}
-.group-info.show { display:block; }
-.mode-required {
-  margin-top:10px;
-  padding:10px 12px;
-  border-radius:13px;
-  background:#fff4c7;
-  font-size:11px;
-  line-height:1.45;
-}
-@media (max-width:560px) {
-  .order-mode-wrap { padding:14px 16px 2px; }
-}
-
 @media (max-width:560px) {
   .top { padding-top:22px; }
   .brand { font-size:28px; }
@@ -701,25 +628,6 @@ textarea.field {
     </div>
   </header>
 
-  <!-- ======================================================
-       PILIH JENIS PESANAN
-       ====================================================== -->
-  <section class="order-mode-wrap" id="orderModeSection">
-    <div class="order-mode-card">
-      <div class="order-mode-title">Pilih Jenis Pesanan</div>
-      <div class="order-mode-buttons">
-        <button type="button" class="order-mode-btn" id="individualModeBtn" onclick="selectOrderMode('INDIVIDUAL')">
-          👤 INDIVIDUAL
-        </button>
-        <button type="button" class="order-mode-btn group" id="groupModeBtn" onclick="selectOrderMode('GROUP')">
-          👥 GROUP ORDER
-        </button>
-      </div>
-      <div class="order-mode-status" id="orderModeStatus">Sila pilih jenis pesanan untuk teruskan.</div>
-      <div class="group-info" id="groupInfo"></div>
-    </div>
-  </section>
-
   <section class="hero">
     <img class="hero-image"
      src="images/nasi-sumatera.png"
@@ -737,7 +645,6 @@ textarea.field {
     <div id="menuList" class="dynamic-list">
       <div class="loading-card">Sedang memuatkan menu...</div>
     </div>
-    <div class="mode-required" id="groupQtyInfo" style="display:none;"></div>
   </section>
 
   <!-- ======================================================
@@ -899,23 +806,8 @@ const PRICE = 8; // Kekalkan untuk keserasian dengan sistem lama; pengiraan sebe
 let qty = 0;
 let orderSubmitting = false;
 
-const PREORDER_API_URL = "https://script.google.com/macros/s/AKfycbwcFKdJvgjKQgGLCJljyZee6TzM-EYv6a3BeE-kUltuwKYRxfjRa6LHXAEYoEnlaAq36w/exec";
-const GROUP_API_URL = "https://script.google.com/macros/s/AKfycbwcFKdJvgjKQgGLCJljyZee6TzM-EYv6a3BeE-kUltuwKYRxfjRa6LHXAEYoEnlaAq36w/exec";
+const PREORDER_API_URL = "https://script.google.com/macros/s/AKfycbykmlfYBpR0OvzQHkozruAJ6z5z-31v7C_52bW1FIrLrOm3PYqNceALyYOmq3HlgEaZEw/exec";
 const BUSINESS_WHATSAPP = "601156859808";
-
-let orderMode = "";
-let groupSettings = {
-  groupOrderEnabled: false,
-  minimumQty: 10,
-  maximumQty: 999,
-  freeDeliveryEnabled: false,
-  freeDeliveryMinQty: 0,
-  rewardEnabled: false,
-  rewardMinQty: 0,
-  rewardType: "",
-  rewardDescription: "",
-  validationMessage: "Group Order tersedia untuk tempahan pukal."
-};
 
 let preorderLoaded = false;
 
@@ -958,114 +850,6 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-/* =====================================================
-   ORDER MODE / GROUP SETTINGS
-   ===================================================== */
-async function loadGroupSettings() {
-  if (!GROUP_API_URL) return;
-  try {
-    const response = await fetch(GROUP_API_URL + "?t=" + Date.now(), {
-      method: "GET",
-      cache: "no-store"
-    });
-    if (!response.ok) throw new Error("Gagal menghubungi backend Group Order.");
-    const result = await response.json();
-    if (!result.success || !result.data) {
-      throw new Error(result.error || "Data Group Order tidak sah.");
-    }
-    groupSettings = { ...groupSettings, ...result.data };
-    updateGroupAvailabilityUI();
-  } catch (error) {
-    console.error("Group backend error:", error);
-    const status = document.getElementById("orderModeStatus");
-    if (status) status.textContent = "Group Order tidak dapat disemak sekarang. Individual Order masih boleh digunakan.";
-    updateGroupAvailabilityUI();
-  }
-}
-
-function updateGroupAvailabilityUI() {
-  const btn = document.getElementById("groupModeBtn");
-  if (!btn) return;
-  if (!groupSettings.groupOrderEnabled) {
-    btn.disabled = true;
-    btn.style.opacity = "0.5";
-    btn.title = "Group Order sedang ditutup.";
-    if (orderMode === "GROUP") selectOrderMode("INDIVIDUAL");
-  } else {
-    btn.disabled = false;
-    btn.style.opacity = "";
-    btn.title = "Group Order";
-  }
-}
-
-function selectOrderMode(mode) {
-  if (mode === "GROUP" && !groupSettings.groupOrderEnabled) {
-    alert("Group Order sedang ditutup.");
-    return;
-  }
-
-  orderMode = mode;
-
-  const individualBtn = document.getElementById("individualModeBtn");
-  const groupBtn = document.getElementById("groupModeBtn");
-  const status = document.getElementById("orderModeStatus");
-  const groupInfo = document.getElementById("groupInfo");
-  const groupQtyInfo = document.getElementById("groupQtyInfo");
-
-  individualBtn?.classList.toggle("active", mode === "INDIVIDUAL");
-  groupBtn?.classList.toggle("active", mode === "GROUP");
-
-  if (mode === "GROUP") {
-    status.textContent = groupSettings.validationMessage || "Group Order tersedia untuk tempahan pukal.";
-    if (groupInfo) {
-      const free = groupSettings.freeDeliveryEnabled
-        ? `Free delivery untuk ${groupSettings.freeDeliveryMinQty} bungkus ke atas.`
-        : "Caj delivery mengikut kawasan.";
-      groupInfo.innerHTML = `👥 <b>Group Order</b><br>${free}`;
-      groupInfo.classList.add("show");
-    }
-    if (groupQtyInfo) {
-      groupQtyInfo.style.display = "block";
-      groupQtyInfo.innerHTML = `Minimum <b>${groupSettings.minimumQty}</b> bungkus · Maksimum <b>${groupSettings.maximumQty}</b> bungkus`;
-    }
-  } else {
-    status.textContent = "Pesanan biasa untuk seorang pelanggan.";
-    groupInfo?.classList.remove("show");
-    if (groupQtyInfo) groupQtyInfo.style.display = "none";
-  }
-}
-
-function getGroupTotalQty() {
-  return getCartItemCount();
-}
-
-async function saveGroupOrderToBackend(orderData) {
-  const body = new URLSearchParams();
-  Object.entries(orderData).forEach(([key, value]) => {
-    body.append(key, value == null ? "" : String(value));
-  });
-
-  const response = await fetch(GROUP_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-    },
-    body: body.toString(),
-    cache: "no-store"
-  });
-
-  if (!response.ok) {
-    throw new Error("Backend Group Order gagal. HTTP " + response.status);
-  }
-
-  const result = await response.json();
-  if (!result.success || !result.data) {
-    throw new Error(result.error || "Group Order tidak berjaya disimpan.");
-  }
-
-  return result.data;
 }
 
 /* =====================================================
@@ -1303,19 +1087,10 @@ function updateTotal() {
 
   const selectedArea = getSelectedDeliveryArea();
 
-  let delivery =
+  const delivery =
     selectedArea
       ? Number(selectedArea.charge) || 0
       : 0;
-
-  // Group Order: ikut syarat free delivery daripada tab GROUP.
-  if (
-    orderMode === "GROUP" &&
-    groupSettings.freeDeliveryEnabled &&
-    getGroupTotalQty() >= Number(groupSettings.freeDeliveryMinQty)
-  ) {
-    delivery = 0;
-  }
 
   const total = productTotal + delivery;
 
@@ -1622,16 +1397,6 @@ function buildItemOrder() {
 async function orderWhatsApp() {
   if (orderSubmitting) return;
 
-  if (!orderMode) {
-    alert("Sila pilih jenis pesanan: Individual atau Group Order.");
-    document.getElementById("orderModeSection")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    return;
-  }
-
-  if (orderMode === "GROUP") {
-    return orderGroupWhatsApp();
-  }
-
   const name =
     document.getElementById("name")
       .value.trim();
@@ -1871,132 +1636,6 @@ _Bayaran akan dibuat secara online melalui WhatsApp._`;
 }
 
 /* =====================================================
-   GROUP ORDER VIA WHATSAPP
-   ===================================================== */
-async function orderGroupWhatsApp() {
-  if (orderSubmitting) return;
-
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const address = document.getElementById("address").value.trim();
-  const note = document.getElementById("note").value.trim();
-  const deliveryDate = document.getElementById("deliveryDate").value;
-  const areaSelect = document.getElementById("area");
-  const area = areaSelect.value;
-  const areaText = areaSelect.options[areaSelect.selectedIndex]
-    ? areaSelect.options[areaSelect.selectedIndex].text
-    : "";
-  const selectedArea = getSelectedDeliveryArea();
-  const cartItems = getAllCartItems();
-  const totalQty = getGroupTotalQty();
-
-  if (!groupSettings.groupOrderEnabled) {
-    alert("Group Order sedang ditutup.");
-    return;
-  }
-
-  if (cartItems.length === 0) {
-    alert("Sila pilih sekurang-kurangnya satu menu.");
-    return;
-  }
-
-  if (totalQty < Number(groupSettings.minimumQty)) {
-    alert(`Minimum Group Order ialah ${groupSettings.minimumQty} bungkus. Kuantiti sekarang: ${totalQty}.`);
-    return;
-  }
-
-  if (totalQty > Number(groupSettings.maximumQty)) {
-    alert(`Maksimum Group Order ialah ${groupSettings.maximumQty} bungkus. Kuantiti sekarang: ${totalQty}.`);
-    return;
-  }
-
-  if (!name || !phone || !address || !deliveryDate || !area) {
-    alert("Sila isi Nama, No. WhatsApp, Tarikh untuk Preorder, Alamat penghantaran dan pilih Kawasan.");
-    return;
-  }
-
-  if (!selectedArea) {
-    alert("Kawasan penghantaran tidak tersedia. Sila refresh halaman.");
-    return;
-  }
-
-  if (!validateDeliveryDate(true)) return;
-
-  const totals = updateTotal();
-  const itemOrder = buildItemOrder();
-
-  orderSubmitting = true;
-  const button = document.querySelector(".cta");
-  const originalButtonHTML = button ? button.innerHTML : "";
-
-  if (button) {
-    button.disabled = true;
-    button.style.opacity = "0.7";
-    button.style.cursor = "wait";
-    button.innerHTML = "<span style='font-weight:800'>MENYIMPAN GROUP ORDER...</span>";
-  }
-
-  try {
-    const savedOrder = await saveGroupOrderToBackend({
-      name,
-      phone,
-      address,
-      area,
-      note,
-      deliveryDate,
-      qty: totalQty,
-      subtotal: totals.subtotal,
-      itemOrder
-    });
-
-    const orderId = savedOrder.orderId;
-    const savedSubtotal = Number(savedOrder.amount?.subtotal ?? totals.subtotal);
-    const savedDelivery = Number(savedOrder.amount?.delivery ?? totals.delivery);
-    const savedTotal = Number(savedOrder.amount?.total ?? totals.total);
-    const benefit = savedOrder.benefit || {};
-
-    let message = `*GROUP ORDER NASI BUKUH*
----------------------------
-*Order ID:* ${orderId}
-*Order Type:* GROUP ORDER
-*Nama Ketua Order:* ${name}
-*No. WhatsApp:* ${phone}
-*Tarikh untuk Preorder:* ${formatDeliveryDate(deliveryDate)}
-*Kawasan:* ${areaText}
-*Lokasi:* ${address}
-
-*PESANAN:*`;
-
-    cartItems.forEach(entry => {
-      message += `\n- ${entry.qty}x ${entry.item.nama} — ${money((Number(entry.item.harga) || 0) * entry.qty)}`;
-    });
-
-    message += `\n\n*Jumlah Bungkus:* ${totalQty}\n*Subtotal:* ${money(savedSubtotal)}\n*Caj Delivery:* ${money(savedDelivery)}\n*JUMLAH:* ${money(savedTotal)}`;
-
-    if (benefit.freeDelivery) message += `\n*Benefit:* FREE DELIVERY`;
-    if (benefit.rewardEnabled && benefit.rewardDescription) {
-      message += `\n*Reward:* ${benefit.rewardDescription}`;
-    }
-    if (note) message += `\n\n*Nota Tambahan:*\n${note}`;
-
-    message += `\n\n---------------------------\n_Bayaran akan dibuat secara online melalui WhatsApp._`;
-
-    window.location.href = "https://wa.me/" + BUSINESS_WHATSAPP + "?text=" + encodeURIComponent(message);
-  } catch (error) {
-    console.error("SAVE GROUP ORDER ERROR:", error);
-    alert("Group Order belum disimpan. WhatsApp tidak akan dibuka.\n\nSebab: " + error.message);
-  } finally {
-    orderSubmitting = false;
-    if (button) {
-      button.disabled = false;
-      button.style.opacity = "";
-      button.style.cursor = "";
-      button.innerHTML = originalButtonHTML;
-    }
-  }
-}
-
-/* =====================================================
    EVENTS
    ===================================================== */
 
@@ -2026,7 +1665,6 @@ document
    ===================================================== */
 
 updateTotal();
-loadGroupSettings();
 loadPreorderSettings();
 </script>
 
